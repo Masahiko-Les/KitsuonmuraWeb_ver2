@@ -19,6 +19,10 @@ create trigger bonfire_posts_set_updated_at
 
 alter table public.bonfire_posts enable row level security;
 
+-- Table-level grant, independent of the "automatically expose new tables"
+-- project setting. anon gets nothing.
+grant select, insert, update, delete on public.bonfire_posts to authenticated;
+
 create policy "bonfire_posts_select_authenticated"
   on public.bonfire_posts for select
   to authenticated

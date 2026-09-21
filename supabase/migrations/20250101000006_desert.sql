@@ -21,6 +21,10 @@ create trigger desert_stories_set_updated_at
 
 alter table public.desert_stories enable row level security;
 
+-- Table-level grant, independent of the "automatically expose new tables"
+-- project setting. anon gets nothing.
+grant select, insert, update, delete on public.desert_stories to authenticated;
+
 create policy "desert_stories_select_authenticated"
   on public.desert_stories for select
   to authenticated

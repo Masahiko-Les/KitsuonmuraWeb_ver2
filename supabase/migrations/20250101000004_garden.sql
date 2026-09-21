@@ -15,9 +15,10 @@ create table public.game_settings (
 
 insert into public.game_settings (id) values (1);
 
--- Not exposed to clients directly: every value here is read through
--- SECURITY DEFINER functions so the frontend never has to (and can't)
--- hardcode balance numbers. See section on vitality below.
+-- Not exposed to clients directly, and deliberately no table grant either:
+-- every value here is read through SECURITY DEFINER functions (which run
+-- as the table owner) so the frontend never has to, and can't, hardcode
+-- balance numbers. See the vitality functions in the shrine migration.
 alter table public.game_settings enable row level security;
 
 create table public.crop_catalog (
@@ -37,6 +38,8 @@ insert into public.crop_catalog (name, emoji) values
 
 alter table public.crop_catalog enable row level security;
 
+grant select on public.crop_catalog to authenticated;
+
 create policy "crop_catalog_select_authenticated"
   on public.crop_catalog for select
   to authenticated
@@ -55,6 +58,10 @@ create index garden_seeds_user_id_idx on public.garden_seeds(user_id);
 create index garden_seeds_status_idx on public.garden_seeds(status);
 
 alter table public.garden_seeds enable row level security;
+
+-- No update/delete grant: status transitions only ever happen inside
+-- water_seed(), which runs as the table owner and doesn't need a role grant.
+grant select, insert on public.garden_seeds to authenticated;
 
 create policy "garden_seeds_select_authenticated"
   on public.garden_seeds for select
@@ -84,6 +91,10 @@ create index waterings_seed_id_idx on public.waterings(seed_id);
 
 alter table public.waterings enable row level security;
 
+-- select only: rows are written exclusively through water_seed(), which
+-- runs as the table owner and doesn't need a role grant to insert.
+grant select on public.waterings to authenticated;
+
 create policy "waterings_select_authenticated"
   on public.waterings for select
   to authenticated
@@ -103,6 +114,9 @@ create table public.harvests (
 
 alter table public.harvests enable row level security;
 
+-- select only: rows are written exclusively through water_seed().
+grant select on public.harvests to authenticated;
+
 create policy "harvests_select_authenticated"
   on public.harvests for select
   to authenticated
@@ -120,6 +134,10 @@ create table public.user_crops (
 create index user_crops_user_id_idx on public.user_crops(user_id);
 
 alter table public.user_crops enable row level security;
+
+-- select only: rows are written exclusively through water_seed() (insert)
+-- and make_offering() (offered_at update), both running as the table owner.
+grant select on public.user_crops to authenticated;
 
 create policy "user_crops_select_own"
   on public.user_crops for select

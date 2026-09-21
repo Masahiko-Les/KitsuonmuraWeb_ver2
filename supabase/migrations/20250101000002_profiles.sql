@@ -21,6 +21,11 @@ create trigger profiles_set_updated_at
 
 alter table public.profiles enable row level security;
 
+-- Table-level grant, independent of the "automatically expose new tables"
+-- project setting: RLS only restricts rows, the role still needs base
+-- privileges on the table before RLS is even consulted. anon gets nothing.
+grant select, insert, update on public.profiles to authenticated;
+
 -- Logged-in residents can see everyone's registry card (village_name, bio,
 -- stutter info) so /residents works, but the outside world sees nothing.
 create policy "profiles_select_authenticated"

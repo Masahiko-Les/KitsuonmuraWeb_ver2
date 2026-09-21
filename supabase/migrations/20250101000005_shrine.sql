@@ -9,9 +9,11 @@ create table public.village_state (
 
 insert into public.village_state (id) values (1);
 
--- No client-facing SELECT/UPDATE policy at all: the raw number is never
--- shown in the UI, and every read/write goes through the SECURITY DEFINER
--- functions below so the decay math and clamping can't be bypassed.
+-- No client-facing SELECT/UPDATE policy at all, and deliberately no table
+-- grant either: the raw number is never shown in the UI, and every
+-- read/write goes through the SECURITY DEFINER functions below (which run
+-- as the table owner, so they need no role grant) so the decay math and
+-- clamping can't be bypassed.
 alter table public.village_state enable row level security;
 
 create table public.offerings (
@@ -24,6 +26,9 @@ create table public.offerings (
 create index offerings_created_at_idx on public.offerings(created_at desc);
 
 alter table public.offerings enable row level security;
+
+-- select only: rows are written exclusively through make_offering().
+grant select on public.offerings to authenticated;
 
 -- Quietly viewable by any resident (祠の裏) — not ranked, just a record.
 create policy "offerings_select_authenticated"

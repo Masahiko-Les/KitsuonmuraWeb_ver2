@@ -21,7 +21,10 @@ npm install
 
 ### 2. Supabase プロジェクトの作成
 
-1. https://supabase.com でプロジェクトを新規作成
+1. https://supabase.com でプロジェクトを新規作成。作成時の詳細設定は以下を選択:
+   - **Enable Data API**: ON（supabase-js から叩くのに必須）
+   - **Enable automatic RLS**: ON（新規テーブルへの安全装置。うちは全テーブルで手動RLSも行うので実質重複するが害はない）
+   - **Automatically expose new tables**: OFF（Supabase推奨のセキュリティ設定。この場合でも動くよう、各 migration に明示的な `grant select/insert/...` を入れてあるので、ONでもOFFでもどちらでも問題ない）
 2. Project Settings → API から以下を控える
    - Project URL
    - `anon` `public` キー
