@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6efe1;
+  --foreground: #3f3226;
+  --village-paper: #fbf6ea;
+  --village-ink: #4a3b2c;
+  --village-ember: #b5613a;
+  --village-leaf: #5c7a4f;
+  --village-border: #d9c9a8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-village-paper: var(--village-paper);
+  --color-village-ink: var(--village-ink);
+  --color-village-ember: var(--village-ember);
+  --color-village-leaf: var(--village-leaf);
+  --color-village-border: var(--village-border);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
