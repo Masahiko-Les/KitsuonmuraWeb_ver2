@@ -27,14 +27,14 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
         <Link
           key={spot.id}
           href={spot.route}
-          title={spot.facility}
+          aria-label={spot.facility}
           style={{
             left: `${spot.x}%`,
             top: `${spot.y}%`,
             width: `${spot.width}%`,
             height: `${spot.height}%`,
           }}
-          className="group absolute flex items-end justify-center rounded-lg border border-transparent transition-colors hover:border-village-ember/60 hover:bg-white/10"
+          className="group absolute flex items-end justify-center rounded-lg transition-colors hover:bg-white/10"
         >
           <span className="mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink opacity-0 shadow transition-opacity group-hover:opacity-100">
             {spot.facility}

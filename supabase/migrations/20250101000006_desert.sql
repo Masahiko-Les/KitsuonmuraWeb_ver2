@@ -3,9 +3,9 @@
 create table public.desert_stories (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  suffering text not null check (char_length(trim(suffering)) > 0 and char_length(suffering) <= 4000),
-  action_taken text not null check (char_length(trim(action_taken)) > 0 and char_length(action_taken) <= 4000),
-  result text not null check (char_length(trim(result)) > 0 and char_length(result) <= 4000),
+  suffering text not null check (char_length(trim(suffering)) >= 10 and char_length(suffering) <= 4000),
+  action_taken text not null check (char_length(trim(action_taken)) >= 10 and char_length(action_taken) <= 4000),
+  result text not null check (char_length(trim(result)) >= 10 and char_length(result) <= 4000),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   deleted_at timestamptz

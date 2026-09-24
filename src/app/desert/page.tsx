@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import type { DesertStory, Profile } from "@/types/database";
@@ -27,8 +28,8 @@ export default async function DesertPage() {
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
-        title="砂漠"
-        description="過去に経験した苦難を振り返り、その経験を後世に残す場所です。"
+        title="砂漠の開拓"
+        description="吃音の苦労に対して、どう考えて、どう行動したかを書き記し、そのチャレンジをタネとして蒔く場所です。砂漠という困難な場所で、あなたと村人たちのチャレンジと応援によって、砂漠を豊かな場所にしていきましょう。村人総出で、苦労を讃えチャレンジを応援し合いましょう。あなたの考えや行動が、村人たちの勇気になりますように。"
       />
 
       <div className="mb-8">
@@ -55,19 +56,19 @@ export default async function DesertPage() {
 
               <dl className="flex flex-col gap-2 text-sm">
                 <div>
-                  <dt className="text-xs text-village-ink/50">何に苦しんだか</dt>
+                  <dt className="text-xs text-village-ink/50">何に苦労したか</dt>
                   <dd className="whitespace-pre-wrap text-village-ink/90">
                     {story.suffering}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-village-ink/50">何をしたか</dt>
+                  <dt className="text-xs text-village-ink/50">どう考えたか</dt>
                   <dd className="whitespace-pre-wrap text-village-ink/90">
                     {story.action_taken}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-village-ink/50">その結果どうなったか</dt>
+                  <dt className="text-xs text-village-ink/50">どう行動したか</dt>
                   <dd className="whitespace-pre-wrap text-village-ink/90">
                     {story.result}
                   </dd>
@@ -75,17 +76,25 @@ export default async function DesertPage() {
               </dl>
 
               {isOwn ? (
-                <form
-                  action={deleteDesertStoryAction.bind(null, story.id)}
-                  className="mt-3 text-right"
-                >
-                  <button
-                    type="submit"
+                <div className="mt-3 flex items-center justify-end gap-3">
+                  <Link
+                    href={`/desert/${story.id}/edit`}
                     className="text-xs text-village-ink/40 hover:text-village-ember"
                   >
-                    削除する
-                  </button>
-                </form>
+                    編集する
+                  </Link>
+                  <form
+                    action={deleteDesertStoryAction.bind(null, story.id)}
+                    className="contents"
+                  >
+                    <button
+                      type="submit"
+                      className="text-xs text-village-ink/40 hover:text-village-ember"
+                    >
+                      削除する
+                    </button>
+                  </form>
+                </div>
               ) : null}
             </li>
           );
