@@ -11,10 +11,12 @@ export default async function VillagePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-8">
-      <div className="relative mb-6 flex items-center">
-        <div>
-          <p className="text-sm text-village-ink/60">おかえりなさい</p>
-          <h1 className="font-serif text-2xl text-village-ink">
+      <div className="relative mb-6 flex items-center justify-end">
+        <div className="text-right">
+          <p className="hidden text-sm text-village-ink/60 sm:block">
+            おかえりなさい
+          </p>
+          <h1 className="font-serif text-lg text-village-ink sm:text-2xl">
             {profile.village_name} さん
           </h1>
         </div>
