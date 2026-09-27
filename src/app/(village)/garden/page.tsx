@@ -16,6 +16,7 @@ export default async function GardenPage() {
   const { data: seedsData } = await supabase
     .from("garden_seeds")
     .select("*")
+    .eq("kind", "community")
     .order("created_at", { ascending: false })
     .limit(100);
 

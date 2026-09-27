@@ -39,6 +39,7 @@ export interface Profile {
 }
 
 export type SeedStatus = "seed" | "growing" | "harvested";
+export type SeedKind = "community" | "own_field";
 
 export const SEED_STATUS_LABEL: Record<SeedStatus, string> = {
   seed: "種",
@@ -60,6 +61,9 @@ export interface GardenSeed {
   user_id: string;
   struggle: string;
   status: SeedStatus;
+  kind: SeedKind;
+  harvest_count: number;
+  last_watered_date: string | null;
   created_at: string;
   harvested_at: string | null;
 }

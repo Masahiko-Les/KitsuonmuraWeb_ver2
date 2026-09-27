@@ -88,7 +88,7 @@ export const mapHotspots: MapHotspot[] = [
   },
   {
     id: "field",
-    facility: "畑",
+    facility: "自分の家の畑",
     x: 73,
     y: 67,
     width: 19,
