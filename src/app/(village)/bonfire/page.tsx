@@ -22,6 +22,14 @@ interface GroupedGift {
   count: number;
 }
 
+interface GroupedGiftableCrop {
+  key: string;
+  name: string;
+  emoji: string | null;
+  count: number;
+  ids: string[];
+}
+
 export default async function BonfirePage() {
   const { supabase, user } = await requireProfile();
 
@@ -69,6 +77,26 @@ export default async function BonfirePage() {
     }
     giftsByPostId.set(gift.bonfire_post_id, list);
   }
+
+  const groupedGiftableCropsByKey = new Map<string, GroupedGiftableCrop>();
+  for (const crop of giftableCrops) {
+    const catalog = crop.harvests?.crop_catalog;
+    const key = catalog?.name ?? "作物";
+    const existing = groupedGiftableCropsByKey.get(key);
+    if (existing) {
+      existing.count += 1;
+      existing.ids.push(crop.id);
+    } else {
+      groupedGiftableCropsByKey.set(key, {
+        key,
+        name: key,
+        emoji: catalog?.emoji ?? "🌾",
+        count: 1,
+        ids: [crop.id],
+      });
+    }
+  }
+  const groupedGiftableCrops = Array.from(groupedGiftableCropsByKey.values());
 
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
@@ -132,19 +160,18 @@ export default async function BonfirePage() {
                     農作物をあげる
                   </summary>
                   <ul className="mt-2 flex flex-col gap-2">
-                    {giftableCrops.map((crop) => (
+                    {groupedGiftableCrops.map((crop) => (
                       <li
-                        key={crop.id}
+                        key={crop.key}
                         className="flex items-center justify-between rounded-lg border border-village-border bg-white px-3 py-2"
                       >
                         <span className="text-sm text-village-ink">
-                          {crop.harvests?.crop_catalog?.emoji ?? "🌾"}{" "}
-                          {crop.harvests?.crop_catalog?.name ?? "作物"}
+                          {crop.emoji} {crop.name} x{crop.count}
                         </span>
                         <form
                           action={giftCropAction.bind(
                             null,
-                            crop.id,
+                            crop.ids[0],
                             post.user_id,
                             post.id,
                           )}
@@ -158,7 +185,7 @@ export default async function BonfirePage() {
                         </form>
                       </li>
                     ))}
-                    {giftableCrops.length === 0 ? (
+                    {groupedGiftableCrops.length === 0 ? (
                       <p className="text-xs text-village-ink/40">
                         あげられる作物がありません
                       </p>
