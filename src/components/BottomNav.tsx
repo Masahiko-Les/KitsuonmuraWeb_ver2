@@ -44,8 +44,8 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-village-border bg-village-paper/95 backdrop-blur">
-      <ul className="mx-auto flex max-w-2xl">
+    <nav className="fixed inset-x-0 bottom-0 z-30 mx-auto max-w-2xl rounded-t-2xl border-x border-t border-village-border bg-village-paper/95 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] backdrop-blur">
+      <ul className="flex">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href;
           return (
