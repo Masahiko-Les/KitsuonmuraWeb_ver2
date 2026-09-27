@@ -8,7 +8,7 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
   const visual = VILLAGE_TIER_VISUALS[tier];
 
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-2xl overflow-hidden rounded-2xl border border-village-border shadow-xl">
+    <div className="relative -mx-4 aspect-square w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border">
       <Image
         src={visual.image}
         alt="村の地図"
