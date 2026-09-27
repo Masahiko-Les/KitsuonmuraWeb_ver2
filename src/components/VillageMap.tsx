@@ -1,14 +1,35 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { mapHotspots } from "@/config/mapHotspots";
 import { VILLAGE_TIER_VISUALS } from "@/config/villageVisuals";
 import type { VillageVitalityTier } from "@/types/database";
 
 export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
   const visual = VILLAGE_TIER_VISUALS[tier];
+  const [isTouchDevice] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(hover: none)").matches,
+  );
+  const [labelsRevealed, setLabelsRevealed] = useState(false);
+
+  function handleMapClick(event: React.MouseEvent<HTMLDivElement>) {
+    // Touch devices have no hover, so hotspot labels are otherwise
+    // invisible until you happen to land on one. The first tap anywhere
+    // on the map just reveals every label instead of navigating; a
+    // second tap on a hotspot then follows it as normal.
+    if (isTouchDevice && !labelsRevealed) {
+      event.preventDefault();
+      setLabelsRevealed(true);
+    }
+  }
 
   return (
-    <div className="relative -mx-4 aspect-square w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border">
+    <div
+      onClick={handleMapClick}
+      className="relative -mx-4 aspect-square w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border"
+    >
       <Image
         src={visual.image}
         alt="村の地図"
@@ -36,7 +57,11 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
           }}
           className="group absolute flex items-end justify-center rounded-lg transition-colors hover:bg-white/10"
         >
-          <span className="mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink opacity-0 shadow transition-opacity group-hover:opacity-100">
+          <span
+            className={`mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink shadow transition-opacity group-hover:opacity-100 ${
+              labelsRevealed ? "opacity-100" : "opacity-0"
+            }`}
+          >
             {spot.facility}
           </span>
         </Link>
