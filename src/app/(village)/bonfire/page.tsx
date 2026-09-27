@@ -2,19 +2,32 @@ import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import type { BonfirePost, Profile } from "@/types/database";
 import { BonfireForm } from "./BonfireForm";
-import { deleteBonfirePostAction } from "./actions";
+import { deleteBonfirePostAction, giftCropAction } from "./actions";
+
+interface GiftableCrop {
+  id: string;
+  harvests: { crop_catalog: { name: string; emoji: string | null } | null } | null;
+}
 
 export default async function BonfirePage() {
   const { supabase, user } = await requireProfile();
 
-  const { data: postsData } = await supabase
-    .from("bonfire_posts")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(100);
+  const [{ data: postsData }, { data: giftableCropsData }] = await Promise.all([
+    supabase
+      .from("bonfire_posts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("user_crops")
+      .select("id, harvests(crop_catalog(name, emoji))")
+      .is("offered_at", null)
+      .order("created_at", { ascending: true }),
+  ]);
 
   const posts = (postsData ?? []) as BonfirePost[];
   const userIds = [...new Set(posts.map((post) => post.user_id))];
+  const giftableCrops = (giftableCropsData ?? []) as unknown as GiftableCrop[];
 
   const { data: profilesData } = userIds.length
     ? await supabase.from("profiles").select("*").in("user_id", userIds)
@@ -44,17 +57,15 @@ export default async function BonfirePage() {
               key={post.id}
               className="rounded-xl border border-village-border bg-village-paper p-4"
             >
-              <div className="mb-2 flex items-center justify-between">
+              <div className="mb-2">
                 <span className="text-sm font-medium text-village-ink">
                   {author?.nickname ?? "名もなき村人"}
                 </span>
-                <time className="text-xs text-village-ink/50">
-                  {new Date(post.created_at).toLocaleString("ja-JP")}
-                </time>
               </div>
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-village-ink/90">
                 {post.body}
               </p>
+
               {isOwn ? (
                 <form
                   action={deleteBonfirePostAction.bind(null, post.id)}
@@ -67,7 +78,46 @@ export default async function BonfirePage() {
                     削除する
                   </button>
                 </form>
-              ) : null}
+              ) : (
+                <details className="mt-3">
+                  <summary className="w-fit cursor-pointer rounded-full border border-village-leaf px-4 py-1.5 text-xs font-medium text-village-leaf transition-colors hover:bg-village-leaf/10">
+                    農作物をあげる
+                  </summary>
+                  <ul className="mt-2 flex flex-col gap-2">
+                    {giftableCrops.map((crop) => (
+                      <li
+                        key={crop.id}
+                        className="flex items-center justify-between rounded-lg border border-village-border bg-white px-3 py-2"
+                      >
+                        <span className="text-sm text-village-ink">
+                          {crop.harvests?.crop_catalog?.emoji ?? "🌾"}{" "}
+                          {crop.harvests?.crop_catalog?.name ?? "作物"}
+                        </span>
+                        <form
+                          action={giftCropAction.bind(
+                            null,
+                            crop.id,
+                            post.user_id,
+                            post.id,
+                          )}
+                        >
+                          <button
+                            type="submit"
+                            className="rounded-full bg-village-ember px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90"
+                          >
+                            あげる
+                          </button>
+                        </form>
+                      </li>
+                    ))}
+                    {giftableCrops.length === 0 ? (
+                      <p className="text-xs text-village-ink/40">
+                        あげられる作物がありません
+                      </p>
+                    ) : null}
+                  </ul>
+                </details>
+              )}
             </li>
           );
         })}

@@ -101,6 +101,15 @@ export interface Offering {
   created_at: string;
 }
 
+export interface CropGift {
+  id: string;
+  user_crop_id: string;
+  giver_id: string;
+  recipient_id: string;
+  bonfire_post_id: string | null;
+  created_at: string;
+}
+
 export interface DesertStory {
   id: string;
   user_id: string;

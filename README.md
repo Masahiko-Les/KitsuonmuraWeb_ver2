@@ -58,6 +58,7 @@ SUPABASE_SERVICE_ROLE_KEY=...   # 今回のMVPでは未使用。将来のサー�
 | `20250101000004_garden.sql` | 農園（種・水やり・収穫・作物配布・`water_seed` RPC） |
 | `20250101000005_shrine.sql` | 祠（村の生命力・お供え・`make_offering` / `get_village_status` RPC） |
 | `20250101000006_desert.sql` | 砂漠（desert_stories） |
+| `20250101000012_crop_gifts.sql` | 焚き火での作物ギフト（crop_gifts・`gift_crop` RPC） |
 
 ### 5. Auth のメール確認設定（推奨）
 
@@ -96,6 +97,7 @@ http://localhost:3000 を開いてください。
 - **village_state** — 村の生命力の基準値と最終計算日。日々の Cron は不要で、
   `経過日数 × daily_vitality_decay` を都度計算する方式。
 - **offerings** — お供え履歴。`unique(user_crop_id)` で同じ作物の二重奉納を禁止。
+- **crop_gifts** — 焚き火での作物ギフト履歴。誰が・誰に・どの投稿を通じて渡したかを記録する。
 - **desert_stories** — 苦難の記録（何に苦しんだか / 何をしたか / その結果）。論理削除。
 
 すべてのテーブルで RLS を有効化しています。特にゲームの根幹となる処理
@@ -112,6 +114,7 @@ http://localhost:3000 を開いてください。
 | `get_village_status()` | 生命力を4段階の状態（tier 1〜4）とメッセージに変換して返す。数値自体はクライアントに公開しない。 |
 | `make_offering(p_user_crop_id uuid)` | 自分の未奉納の作物を祠にお供えする。現在の生命力を再計算し、`offering_recovery` を加算して `max_vitality` でクランプ、その値を新しい基準値として保存する。 |
 | `get_offering_history()` | 祠の裏で表示する、全村人のお供え履歴（誰が・何を・いつ）を返す。`user_crops` は本人しか SELECT できないため、この関数を介さず直接テーブルを結合すると他人の記録が見えなくなる。 |
+| `gift_crop(p_user_crop_id uuid, p_recipient_id uuid, p_bonfire_post_id uuid)` | 自分の未奉納の作物を、焚き火の投稿を通じて他の村人に渡す。`user_crops.user_id` を書き換えて所有者を移し、`crop_gifts` に記録を残す。 |
 
 ## 画面構成
 
