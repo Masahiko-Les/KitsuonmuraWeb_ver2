@@ -251,7 +251,7 @@ revoke all on function public.water_seed(uuid) from public;
 grant execute on function public.water_seed(uuid) to authenticated;
 
 -- Waters the caller's own 自分の家の畑 seed: at most once per calendar
--- day, never on the planting day itself, and never past 10 harvests.
+-- day (including the day it was planted), and never past 10 harvests.
 -- Each successful watering immediately yields one random crop, credited
 -- to the caller alone. The row lock on garden_seeds serializes concurrent
 -- calls against the same seed. Deliberately separate from water_seed()
@@ -288,10 +288,6 @@ begin
 
   if v_seed.harvest_count >= 10 then
     raise exception 'this seed has already reached its harvest limit';
-  end if;
-
-  if v_seed.created_at::date >= current_date then
-    raise exception 'cannot water on the day you planted';
   end if;
 
   if v_seed.last_watered_date is not null and v_seed.last_watered_date >= current_date then

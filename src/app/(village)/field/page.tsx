@@ -47,7 +47,7 @@ export default async function FieldPage() {
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
         title="自分の家の畑"
-        description="自分ができたことを種として植え、翌日から1日1回、自分で水をやりましょう。水をやるたびに実が1つ育ちます。1つの種につき最大10個で収穫は終わり、また新しい種を植えられます。"
+        description="自分ができたことを種として植え、植えたその日から1日1回、自分で水をやりましょう。水をやるたびに実が1つ育ちます。1つの種につき最大10個で収穫は終わり、また新しい種を植えられます。"
       />
 
       <div className="mb-8">
@@ -57,9 +57,8 @@ export default async function FieldPage() {
       <ul className="flex flex-col gap-4">
         {seeds.map((seed) => {
           const isDone = seed.harvest_count >= 10;
-          const plantedToday = seed.created_at.slice(0, 10) === today;
           const wateredToday = seed.last_watered_date === today;
-          const canWater = !isDone && !plantedToday && !wateredToday;
+          const canWater = !isDone && !wateredToday;
           const crops = cropsBySeedId.get(seed.id) ?? [];
           const statusLabel = SEED_STATUS_LABEL[seed.status as SeedStatus];
 
@@ -102,9 +101,7 @@ export default async function FieldPage() {
                 <p className="mt-3 text-xs text-village-ink/40">
                   {isDone
                     ? "この種の収穫は終わりました。"
-                    : plantedToday
-                      ? "植えたばかりです。明日から水やりができます。"
-                      : "今日はもう水をあげました。また明日。"}
+                    : "今日はもう水をあげました。また明日。"}
                 </p>
               )}
             </li>

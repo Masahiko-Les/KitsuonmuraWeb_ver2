@@ -115,7 +115,7 @@ http://localhost:3000 を開いてください。
 | `get_village_status()` | 生命力を4段階の状態（tier 1〜4）とメッセージに変換して返す。数値自体はクライアントに公開しない。 |
 | `make_offering(p_user_crop_id uuid)` | 自分の未奉納の作物を祠にお供えする。現在の生命力を再計算し、`offering_recovery` を加算して `max_vitality` でクランプ、その値を新しい基準値として保存する。 |
 | `get_offering_history()` | 祠の裏で表示する、全村人のお供え履歴（誰が・何を・いつ）を返す。`user_crops` は本人しか SELECT できないため、この関数を介さず直接テーブルを結合すると他人の記録が見えなくなる。 |
-| `water_own_field_seed(p_seed_id uuid)` | 自分の家の畑で、自分の種に水をやる。植えた翌日以降・1日1回まで。水をやるたびに即座にランダムな作物を1個収穫し、自分だけに配布する。`harvest_count`が10に達すると、その種は収穫終了になる。 |
+| `water_own_field_seed(p_seed_id uuid)` | 自分の家の畑で、自分の種に水をやる。植えた当日から1日1回まで。水をやるたびに即座にランダムな作物を1個収穫し、自分だけに配布する。`harvest_count`が10に達すると、その種は収穫終了になる。 |
 | `gift_crop(p_user_crop_id uuid, p_recipient_id uuid, p_bonfire_post_id uuid)` | 自分の未奉納の作物を、焚き火の投稿を通じて他の村人に渡す。`user_crops.user_id` を書き換えて所有者を移し、`crop_gifts` に記録を残す。 |
 
 ## 画面構成
