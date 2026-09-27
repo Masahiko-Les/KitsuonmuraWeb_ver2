@@ -1,7 +1,94 @@
+import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
-import { ComingSoon } from "@/components/ComingSoon";
+import { FacilityHeader } from "@/components/FacilityHeader";
+import { ProfileCard } from "@/components/ProfileCard";
+
+interface OwnedCrop {
+  id: string;
+  harvests: {
+    crop_catalog: { id: string; name: string; emoji: string | null } | null;
+  } | null;
+}
+
+interface GroupedCrop {
+  key: string;
+  name: string;
+  emoji: string | null;
+  count: number;
+}
 
 export default async function MyHousePage() {
-  await requireProfile();
-  return <ComingSoon title="自分の家" />;
+  const { supabase, profile } = await requireProfile();
+
+  const { data: cropsData } = await supabase
+    .from("user_crops")
+    .select("id, harvests(crop_catalog(id, name, emoji))")
+    .order("created_at", { ascending: true });
+
+  const crops = (cropsData ?? []) as unknown as OwnedCrop[];
+
+  const grouped = new Map<string, GroupedCrop>();
+  for (const crop of crops) {
+    const catalog = crop.harvests?.crop_catalog;
+    const key = catalog?.id ?? "unknown";
+    const existing = grouped.get(key);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      grouped.set(key, {
+        key,
+        name: catalog?.name ?? "作物",
+        emoji: catalog?.emoji ?? "🌾",
+        count: 1,
+      });
+    }
+  }
+  const groupedCrops = Array.from(grouped.values());
+
+  return (
+    <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
+      <FacilityHeader title="自分の家" />
+
+      <section className="flex flex-col gap-4">
+        <h2 className="text-sm font-medium text-village-ink/80">
+          所持している収穫物
+        </h2>
+        <ul className="flex flex-col gap-3">
+          {groupedCrops.map((crop) => (
+            <li
+              key={crop.key}
+              className="flex items-center justify-between rounded-xl border border-village-border bg-white px-4 py-3"
+            >
+              <span className="text-sm text-village-ink">
+                {crop.emoji ?? "🌾"} {crop.name}
+              </span>
+              <span className="text-sm font-medium text-village-ink/70">
+                x {crop.count}
+              </span>
+            </li>
+          ))}
+        </ul>
+        {groupedCrops.length === 0 ? (
+          <p className="text-center text-sm text-village-ink/50">
+            まだ収穫物を持っていません。農園で作物を育てましょう。
+          </p>
+        ) : null}
+      </section>
+
+      <section className="mt-8 flex flex-col gap-4">
+        <h2 className="text-sm font-medium text-village-ink/80">
+          自分の住民票
+        </h2>
+        <ProfileCard profile={profile} />
+        <div>
+          <Link
+            href="/town-hall/edit"
+            className="rounded-full bg-village-ember px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          >
+            住民票を編集する
+          </Link>
+        </div>
+      </section>
+    </main>
+  );
 }
