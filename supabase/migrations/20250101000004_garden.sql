@@ -84,8 +84,6 @@ create policy "garden_seeds_select_authenticated"
 
 -- Planting is a plain insert; growth/harvest transitions only ever happen
 -- inside water_seed() below, so there is deliberately no UPDATE policy here.
--- Community seeds: anyone may plant any number. Own-field seeds: only one
--- unfinished (harvest_count < 10) own-field seed per resident at a time.
 create policy "garden_seeds_insert_own"
   on public.garden_seeds for insert
   to authenticated
@@ -93,15 +91,6 @@ create policy "garden_seeds_insert_own"
     user_id = auth.uid()
     and status = 'seed'
     and harvested_at is null
-    and (
-      kind = 'community'
-      or not exists (
-        select 1 from public.garden_seeds gs
-        where gs.user_id = auth.uid()
-          and gs.kind = 'own_field'
-          and gs.harvest_count < 10
-      )
-    )
   );
 
 create table public.waterings (

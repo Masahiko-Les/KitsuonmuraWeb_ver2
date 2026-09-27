@@ -42,7 +42,6 @@ export default async function FieldPage() {
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  const hasActiveSeed = seeds.some((seed) => seed.harvest_count < 10);
 
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
@@ -52,13 +51,7 @@ export default async function FieldPage() {
       />
 
       <div className="mb-8">
-        {hasActiveSeed ? (
-          <p className="text-sm text-village-ink/50">
-            今育てている種があります。収穫し終えると、新しい種を植えられます。
-          </p>
-        ) : (
-          <PlantFieldSeedForm />
-        )}
+        <PlantFieldSeedForm />
       </div>
 
       <ul className="flex flex-col gap-4">

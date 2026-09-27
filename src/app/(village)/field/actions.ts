@@ -25,19 +25,6 @@ export async function plantFieldSeedAction(
     return { error: "できたことを書いてから植えてください。" };
   }
 
-  const { count } = await supabase
-    .from("garden_seeds")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", user.id)
-    .eq("kind", "own_field")
-    .lt("harvest_count", 10);
-
-  if ((count ?? 0) > 0) {
-    return {
-      error: "今育てている種があります。収穫し終えてから、新しい種を植えてください。",
-    };
-  }
-
   const { error } = await supabase
     .from("garden_seeds")
     .insert({ user_id: user.id, struggle: content, kind: "own_field" });
