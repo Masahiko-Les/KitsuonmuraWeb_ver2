@@ -1,6 +1,6 @@
 import { requireProfile } from "@/lib/guards";
 import { VillageMap } from "@/components/VillageMap";
-import { SignOutButton } from "@/components/SignOutButton";
+import { SettingsMenu } from "@/components/SettingsMenu";
 import type { VillageStatus, VillageVitalityTier } from "@/types/database";
 
 export default async function VillagePage() {
@@ -12,14 +12,19 @@ export default async function VillagePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 grid grid-cols-[1fr_auto_1fr] items-center">
         <div>
           <p className="text-sm text-village-ink/60">おかえりなさい</p>
           <h1 className="font-serif text-2xl text-village-ink">
             {profile.village_name} さん
           </h1>
         </div>
-        <SignOutButton />
+        <p className="justify-self-center font-serif text-xl text-village-ink">
+          吃音村
+        </p>
+        <div className="justify-self-end">
+          <SettingsMenu />
+        </div>
       </div>
 
       <VillageMap tier={tier} />
