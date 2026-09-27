@@ -2,15 +2,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { mapHotspots } from "@/config/mapHotspots";
 import { VILLAGE_TIER_VISUALS } from "@/config/villageVisuals";
 import type { VillageVitalityTier } from "@/types/database";
 
+function subscribeToHoverCapability(callback: () => void) {
+  const mql = window.matchMedia("(hover: none)");
+  mql.addEventListener("change", callback);
+  return () => mql.removeEventListener("change", callback);
+}
+
+function getHoverCapabilitySnapshot() {
+  return window.matchMedia("(hover: none)").matches;
+}
+
+function getHoverCapabilityServerSnapshot() {
+  return false;
+}
+
 export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
   const visual = VILLAGE_TIER_VISUALS[tier];
-  const [isTouchDevice] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(hover: none)").matches,
+  // React's recommended pattern for reading browser-only state (avoids the
+  // SSR/hydration mismatch a useState+useEffect version would have).
+  const isTouchDevice = useSyncExternalStore(
+    subscribeToHoverCapability,
+    getHoverCapabilitySnapshot,
+    getHoverCapabilityServerSnapshot,
   );
   const [labelsRevealed, setLabelsRevealed] = useState(false);
 
@@ -55,12 +73,14 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
             width: `${spot.width}%`,
             height: `${spot.height}%`,
           }}
-          className="group absolute flex items-end justify-center rounded-lg transition-colors hover:bg-white/10"
+          className={`group absolute flex items-end justify-center rounded-lg transition-colors ${
+            isTouchDevice ? "" : "hover:bg-white/10"
+          }`}
         >
           <span
-            className={`mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink shadow transition-opacity group-hover:opacity-100 ${
-              labelsRevealed ? "opacity-100" : "opacity-0"
-            }`}
+            className={`mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink shadow transition-opacity ${
+              isTouchDevice ? "" : "group-hover:opacity-100"
+            } ${labelsRevealed ? "opacity-100" : "opacity-0"}`}
           >
             {spot.facility}
           </span>
