@@ -23,6 +23,7 @@ export default async function MyHousePage() {
   const { data: cropsData } = await supabase
     .from("user_crops")
     .select("id, harvests(crop_catalog(id, name, emoji))")
+    .is("offered_at", null)
     .order("created_at", { ascending: true });
 
   const crops = (cropsData ?? []) as unknown as OwnedCrop[];

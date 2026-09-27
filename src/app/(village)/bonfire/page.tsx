@@ -9,25 +9,43 @@ interface GiftableCrop {
   harvests: { crop_catalog: { name: string; emoji: string | null } | null } | null;
 }
 
+interface PostGift {
+  id: string;
+  bonfire_post_id: string | null;
+  harvests: { crop_catalog: { name: string; emoji: string | null } | null } | null;
+}
+
+interface GroupedGift {
+  key: string;
+  name: string;
+  emoji: string | null;
+  count: number;
+}
+
 export default async function BonfirePage() {
   const { supabase, user } = await requireProfile();
 
-  const [{ data: postsData }, { data: giftableCropsData }] = await Promise.all([
-    supabase
-      .from("bonfire_posts")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(100),
-    supabase
-      .from("user_crops")
-      .select("id, harvests(crop_catalog(name, emoji))")
-      .is("offered_at", null)
-      .order("created_at", { ascending: true }),
-  ]);
+  const [{ data: postsData }, { data: giftableCropsData }, { data: postGiftsData }] =
+    await Promise.all([
+      supabase
+        .from("bonfire_posts")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100),
+      supabase
+        .from("user_crops")
+        .select("id, harvests(crop_catalog(name, emoji))")
+        .is("offered_at", null)
+        .order("created_at", { ascending: true }),
+      supabase
+        .from("crop_gifts")
+        .select("id, bonfire_post_id, harvests(crop_catalog(name, emoji))"),
+    ]);
 
   const posts = (postsData ?? []) as BonfirePost[];
   const userIds = [...new Set(posts.map((post) => post.user_id))];
   const giftableCrops = (giftableCropsData ?? []) as unknown as GiftableCrop[];
+  const postGifts = (postGiftsData ?? []) as unknown as PostGift[];
 
   const { data: profilesData } = userIds.length
     ? await supabase.from("profiles").select("*").in("user_id", userIds)
@@ -36,6 +54,21 @@ export default async function BonfirePage() {
   const profileByUserId = new Map(
     ((profilesData ?? []) as Profile[]).map((profile) => [profile.user_id, profile]),
   );
+
+  const giftsByPostId = new Map<string, GroupedGift[]>();
+  for (const gift of postGifts) {
+    if (!gift.bonfire_post_id) continue;
+    const catalog = gift.harvests?.crop_catalog;
+    const key = catalog?.name ?? "作物";
+    const list = giftsByPostId.get(gift.bonfire_post_id) ?? [];
+    const existing = list.find((entry) => entry.key === key);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      list.push({ key, name: key, emoji: catalog?.emoji ?? "🌾", count: 1 });
+    }
+    giftsByPostId.set(gift.bonfire_post_id, list);
+  }
 
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
@@ -52,6 +85,7 @@ export default async function BonfirePage() {
         {posts.map((post) => {
           const author = profileByUserId.get(post.user_id);
           const isOwn = post.user_id === user.id;
+          const gifts = giftsByPostId.get(post.id) ?? [];
           return (
             <li
               key={post.id}
@@ -65,6 +99,20 @@ export default async function BonfirePage() {
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-village-ink/90">
                 {post.body}
               </p>
+
+              {gifts.length > 0 ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {gifts.map((gift) => (
+                    <span
+                      key={gift.key}
+                      className="rounded-full bg-village-leaf/10 px-3 py-1 text-xs text-village-leaf"
+                    >
+                      {gift.emoji} {gift.name}
+                      {gift.count > 1 ? ` x${gift.count}` : ""}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
 
               {isOwn ? (
                 <form

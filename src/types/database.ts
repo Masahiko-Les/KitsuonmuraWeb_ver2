@@ -107,6 +107,7 @@ export interface CropGift {
   giver_id: string;
   recipient_id: string;
   bonfire_post_id: string | null;
+  harvest_id: string | null;
   created_at: string;
 }
 
