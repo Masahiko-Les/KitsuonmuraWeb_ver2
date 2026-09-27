@@ -46,7 +46,7 @@ export default async function BonfirePage() {
             >
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-sm font-medium text-village-ink">
-                  {author?.village_name ?? "名もなき村人"}
+                  {author?.nickname ?? "名もなき村人"}
                 </span>
                 <time className="text-xs text-village-ink/50">
                   {new Date(post.created_at).toLocaleString("ja-JP")}

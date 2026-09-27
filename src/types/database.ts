@@ -26,11 +26,14 @@ export const DIFFICULT_SOUND_ROWS: string[][] = [
 export interface Profile {
   id: string;
   user_id: string;
-  village_name: string;
+  nickname: string;
   bio: string | null;
+  favorite_things: string | null;
   stutter_types: string[];
   difficult_sounds: string[];
-  avatar_url: string | null;
+  difficult_situations: string | null;
+  easy_situations: string | null;
+  first_noticed_stutter: string | null;
   created_at: string;
   updated_at: string;
 }

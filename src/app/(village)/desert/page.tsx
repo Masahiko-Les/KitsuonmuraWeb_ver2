@@ -47,7 +47,7 @@ export default async function DesertPage() {
             >
               <div className="mb-3 flex items-center justify-between text-sm">
                 <span className="font-medium text-village-ink">
-                  {author?.village_name ?? "名もなき村人"}
+                  {author?.nickname ?? "名もなき村人"}
                 </span>
                 <time className="text-xs text-village-ink/50">
                   {new Date(story.created_at).toLocaleDateString("ja-JP")}

@@ -17,7 +17,7 @@ export default async function VillagePage() {
             おかえりなさい
           </p>
           <h1 className="font-serif text-sm text-village-ink sm:text-2xl">
-            {profile.village_name} さん
+            {profile.nickname} さん
           </h1>
         </div>
         <p className="absolute inset-x-0 text-center font-serif text-4xl text-village-ink">

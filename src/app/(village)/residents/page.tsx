@@ -9,7 +9,7 @@ export default async function ResidentsPage() {
   const { data } = await supabase
     .from("profiles")
     .select("*")
-    .order("village_name", { ascending: true });
+    .order("nickname", { ascending: true });
 
   const residents = (data ?? []) as Profile[];
 
@@ -25,18 +25,9 @@ export default async function ResidentsPage() {
               className="flex items-center gap-3 rounded-xl border border-village-border bg-village-paper px-4 py-3 transition-colors hover:border-village-ember"
             >
               <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-village-border bg-white text-lg">
-                {resident.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={resident.avatar_url}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  "🌾"
-                )}
+                🌾
               </span>
-              <span className="text-village-ink">{resident.village_name}</span>
+              <span className="text-village-ink">{resident.nickname}</span>
             </Link>
           </li>
         ))}

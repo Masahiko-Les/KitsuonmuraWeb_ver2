@@ -3,11 +3,14 @@
 create table public.profiles (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null unique references auth.users(id) on delete cascade,
-  village_name text not null check (char_length(trim(village_name)) > 0),
+  nickname text not null check (char_length(trim(nickname)) > 0),
   bio text,
+  favorite_things text check (favorite_things is null or char_length(favorite_things) <= 2000),
   stutter_types text[] not null default '{}',
   difficult_sounds text[] not null default '{}',
-  avatar_url text,
+  difficult_situations text check (difficult_situations is null or char_length(difficult_situations) <= 2000),
+  easy_situations text check (easy_situations is null or char_length(easy_situations) <= 2000),
+  first_noticed_stutter text check (first_noticed_stutter is null or char_length(first_noticed_stutter) <= 2000),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

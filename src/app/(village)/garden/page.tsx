@@ -79,7 +79,7 @@ export default async function GardenPage() {
             >
               <div className="mb-2 flex items-center justify-between text-sm">
                 <span className="font-medium text-village-ink">
-                  {planter?.village_name ?? "名もなき村人"}
+                  {planter?.nickname ?? "名もなき村人"}
                 </span>
                 <span className="rounded-full bg-village-leaf/10 px-3 py-0.5 text-xs text-village-leaf">
                   {statusLabel}

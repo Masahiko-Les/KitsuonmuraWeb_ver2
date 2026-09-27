@@ -41,7 +41,7 @@ export default async function ShrineBackPage() {
               className="flex items-center justify-between rounded-lg border border-village-border bg-village-paper px-4 py-2.5 text-sm"
             >
               <span className="text-village-ink">
-                {author?.village_name ?? "名もなき村人"}さん
+                {author?.nickname ?? "名もなき村人"}さん
               </span>
               <span className="text-village-ink/70">
                 {offering.crop_emoji ?? "🌾"} {offering.crop_name}
