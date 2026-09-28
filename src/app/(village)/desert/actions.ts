@@ -100,6 +100,12 @@ export async function updateDesertStoryAction(
   redirect("/desert");
 }
 
+export async function waterDesertStoryAction(storyId: string) {
+  const supabase = await createClient();
+  await supabase.rpc("water_desert_story", { p_story_id: storyId });
+  revalidatePath("/desert");
+}
+
 export async function deleteDesertStoryAction(storyId: string) {
   const supabase = await createClient();
   const {

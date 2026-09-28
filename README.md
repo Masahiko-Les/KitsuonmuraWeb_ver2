@@ -60,6 +60,8 @@ SUPABASE_SERVICE_ROLE_KEY=...   # 今回のMVPでは未使用。将来のサー�
 | `20250101000006_desert.sql` | 砂漠（desert_stories） |
 | `20250101000012_crop_gifts.sql` | 焚き火での作物ギフト（crop_gifts・`gift_crop` RPC） |
 | `20250101000014_own_field.sql` | 自分の家の畑（garden_seeds.kind・`water_own_field_seed` RPC） |
+| `20250101000017_desert_bloom.sql` | 砂漠の開拓の水やり・開花（desert_waterings・flower_catalog・desert_blooms・user_flowers・`water_desert_story` RPC） |
+| `20250101000018_library.sql` | 図書館（book_catalog・library_reviews・flower_gifts・`gift_flower` RPC） |
 
 ### 5. Auth のメール確認設定（推奨）
 
@@ -99,7 +101,14 @@ http://localhost:3000 を開いてください。
   `経過日数 × daily_vitality_decay` を都度計算する方式。
 - **offerings** — お供え履歴。`unique(user_crop_id)` で同じ作物の二重奉納を禁止。
 - **crop_gifts** — 焚き火での作物ギフト履歴。誰が・誰に・どの投稿を通じて渡したかを記録する。
-- **desert_stories** — 苦難の記録（何に苦しんだか / 何をしたか / その結果）。論理削除。
+- **desert_stories** — 苦難の記録（何に苦しんだか / 何をしたか / その結果）。論理削除。`status`（`story` → `blooming` → `bloomed`）で水やりの進捗を管理する。投稿内容（本文3項目）は本人がいつでも編集可能だが、`status`/`bloomed_at` は列レベルの権限制限により `water_desert_story()` 経由でしか変更できない。
+- **desert_waterings** — 砂漠の記録への水やり記録。`unique(story_id, user_id)` で二重水やりを禁止。`waterings` と同型で、`water_desert_story()` RPC 経由でのみ作成される。
+- **flower_catalog** — 咲く花のマスタ。`crop_catalog` と同型。`is_active` で後から増減可能。
+- **desert_blooms** — 開花の記録そのもの。`harvests` と同型で、`story_id` は一生に1回だけ開花する（`water_desert_story()` 内のアプリケーションロジックで保証）。
+- **user_flowers** — 咲いた花の個人在庫。`crop_catalog`/`user_crops` とは完全に独立しており、祠のお供えには使わない収集専用の在庫（`offered_at` 相当のカラムはない）。
+- **book_catalog** — 図書館に並ぶ本のマスタ（タイトル・著者・紹介文・表示順）。`crop_catalog`/`flower_catalog` と同型。`is_active` で後から増減可能。
+- **library_reviews** — 本への感想。`bonfire_posts` と同型（論理削除）に加えて `book_id` を持つ。本人はいつでも編集・削除できる。
+- **flower_gifts** — 図書館の感想への花ギフト履歴。`crop_gifts` の最終形（`harvest_id` 相当として `bloom_id` を持つ）と同じ構造で、誰が・誰に・どの感想を通じて渡したかを記録する。
 
 すべてのテーブルで RLS を有効化しています。特にゲームの根幹となる処理
 （水やり3回での収穫判定・作物のランダム決定・複数人への配布・お供えによる
@@ -117,6 +126,8 @@ http://localhost:3000 を開いてください。
 | `get_offering_history()` | 祠の裏で表示する、全村人のお供え履歴（誰が・何を・いつ）を返す。`user_crops` は本人しか SELECT できないため、この関数を介さず直接テーブルを結合すると他人の記録が見えなくなる。 |
 | `water_own_field_seed(p_seed_id uuid)` | 自分の家の畑で、自分の種に水をやる。植えた当日から1日1回まで。水をやるたびに即座にランダムな作物を1個収穫し、自分だけに配布する。`harvest_count`が10に達すると、その種は収穫終了になる。 |
 | `gift_crop(p_user_crop_id uuid, p_recipient_id uuid, p_bonfire_post_id uuid)` | 自分の未奉納の作物を、焚き火の投稿を通じて他の村人に渡す。`user_crops.user_id` を書き換えて所有者を移し、`crop_gifts` に記録を残す。 |
+| `water_desert_story(p_story_id uuid)` | 砂漠の記録に水をやる。自分の記録には不可、二重水やりも DB 制約で禁止。`harvest_water_count`（農園と共通）回に達すると、その場でランダムな花を咲かせ、記録した人＋水をやった全員に配布する。 |
+| `gift_flower(p_user_flower_id uuid, p_recipient_id uuid, p_library_review_id uuid)` | 自分の花を、図書館の感想を通じて他の村人に渡す。`user_flowers.user_id` を書き換えて所有者を移し、`flower_gifts` に記録を残す。 |
 
 ## 画面構成
 
@@ -135,7 +146,9 @@ http://localhost:3000 を開いてください。
 /shrine           祠
 /shrine/back      祠の裏（お供え履歴）
 /desert           砂漠
-/library          図書館（準備中）
+/library          図書館（本の一覧）
+/library/[id]     本の詳細・感想投稿・花のギフト
+/library/[id]/reviews/[id]/edit  感想の編集
 ```
 
 ## MVP でやらないこと

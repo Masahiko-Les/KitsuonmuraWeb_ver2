@@ -115,15 +115,84 @@ export interface CropGift {
   created_at: string;
 }
 
+export type StoryStatus = "story" | "blooming" | "bloomed";
+
+export const STORY_STATUS_LABEL: Record<StoryStatus, string> = {
+  story: "種",
+  blooming: "芽が出た",
+  bloomed: "開花",
+};
+
 export interface DesertStory {
   id: string;
   user_id: string;
   suffering: string;
   action_taken: string;
   result: string;
+  status: StoryStatus;
+  bloomed_at: string | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
+}
+
+export interface DesertWatering {
+  id: string;
+  story_id: string;
+  user_id: string;
+  created_at: string;
+}
+
+export interface FlowerCatalogItem {
+  id: string;
+  name: string;
+  emoji: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface DesertBloom {
+  id: string;
+  story_id: string;
+  flower_id: string;
+  created_at: string;
+}
+
+export interface UserFlower {
+  id: string;
+  user_id: string;
+  bloom_id: string;
+  created_at: string;
+}
+
+export interface BookCatalogItem {
+  id: string;
+  title: string;
+  author: string | null;
+  description: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface LibraryReview {
+  id: string;
+  book_id: string;
+  user_id: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+}
+
+export interface FlowerGift {
+  id: string;
+  user_flower_id: string;
+  giver_id: string;
+  recipient_id: string;
+  library_review_id: string | null;
+  bloom_id: string | null;
+  created_at: string;
 }
 
 export type VillageVitalityTier = 1 | 2 | 3 | 4;
