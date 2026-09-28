@@ -28,9 +28,9 @@ insert into public.book_catalog (title, author, description, sort_order) values
     1
   ),
   (
-    '成人吃音とともに',
+    '吃音の世界 (光文社新書)',
+    '菊池良和',
     null,
-    '大人になってからも続いていく吃音とのつきあい方や、暮らしの中の思いに寄り添ってくれる本です。仕事や人間関係のなかで感じることを、静かに見つめたいときに手に取りたい一冊です。',
     2
   );
 
