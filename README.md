@@ -62,6 +62,9 @@ SUPABASE_SERVICE_ROLE_KEY=...   # 今回のMVPでは未使用。将来のサー�
 | `20250101000014_own_field.sql` | 自分の家の畑（garden_seeds.kind・`water_own_field_seed` RPC） |
 | `20250101000017_desert_bloom.sql` | 砂漠の開拓の水やり・開花（desert_waterings・flower_catalog・desert_blooms・user_flowers・`water_desert_story` RPC） |
 | `20250101000018_library.sql` | 図書館（book_catalog・library_reviews・flower_gifts・`gift_flower` RPC） |
+| `20250101000019_soft_delete_rls_fix.sql` | 焚き火・砂漠・図書館の論理削除RLS修正 |
+| `20250101000020_library_book_swap.sql` | 図書館の本の入れ替え |
+| `20250101000021_cinema.sql` | 映画館（movie_catalog・cinema_reviews・cinema_flower_gifts・`gift_flower_to_cinema_review` RPC） |
 
 ### 5. Auth のメール確認設定（推奨）
 
@@ -109,6 +112,9 @@ http://localhost:3000 を開いてください。
 - **book_catalog** — 図書館に並ぶ本のマスタ（タイトル・著者・紹介文・表示順）。`crop_catalog`/`flower_catalog` と同型。`is_active` で後から増減可能。
 - **library_reviews** — 本への感想。`bonfire_posts` と同型（論理削除）に加えて `book_id` を持つ。本人はいつでも編集・削除できる。
 - **flower_gifts** — 図書館の感想への花ギフト履歴。`crop_gifts` の最終形（`harvest_id` 相当として `bloom_id` を持つ）と同じ構造で、誰が・誰に・どの感想を通じて渡したかを記録する。
+- **movie_catalog** — 映画館に並ぶ映画のマスタ（タイトル・原題・紹介文・表示順）。`book_catalog` と同型。
+- **cinema_reviews** — 映画への感想。`library_reviews` と同型（`book_id` の代わりに `movie_id`）。本人はいつでも編集・削除できる。
+- **cinema_flower_gifts** — 映画館の感想への花ギフト履歴。`flower_gifts` と同型（`library_review_id` の代わりに `cinema_review_id`）。
 
 すべてのテーブルで RLS を有効化しています。特にゲームの根幹となる処理
 （水やり3回での収穫判定・作物のランダム決定・複数人への配布・お供えによる
@@ -128,6 +134,7 @@ http://localhost:3000 を開いてください。
 | `gift_crop(p_user_crop_id uuid, p_recipient_id uuid, p_bonfire_post_id uuid)` | 自分の未奉納の作物を、焚き火の投稿を通じて他の村人に渡す。`user_crops.user_id` を書き換えて所有者を移し、`crop_gifts` に記録を残す。 |
 | `water_desert_story(p_story_id uuid)` | 砂漠の記録に水をやる。自分の記録には不可、二重水やりも DB 制約で禁止。`harvest_water_count`（農園と共通）回に達すると、その場でランダムな花を咲かせ、記録した人＋水をやった全員に配布する。 |
 | `gift_flower(p_user_flower_id uuid, p_recipient_id uuid, p_library_review_id uuid)` | 自分の花を、図書館の感想を通じて他の村人に渡す。`user_flowers.user_id` を書き換えて所有者を移し、`flower_gifts` に記録を残す。 |
+| `gift_flower_to_cinema_review(p_user_flower_id uuid, p_recipient_id uuid, p_cinema_review_id uuid)` | 自分の花を、映画館の感想を通じて他の村人に渡す。`gift_flower` と同じ処理を `cinema_flower_gifts` に記録する。 |
 
 ## 画面構成
 
@@ -149,6 +156,9 @@ http://localhost:3000 を開いてください。
 /library          図書館（本の一覧）
 /library/[id]     本の詳細・感想投稿・花のギフト
 /library/[id]/reviews/[id]/edit  感想の編集
+/cinema           映画館（映画の一覧）
+/cinema/[id]      映画の詳細・感想投稿・花のギフト
+/cinema/[id]/reviews/[id]/edit  感想の編集
 ```
 
 ## MVP でやらないこと

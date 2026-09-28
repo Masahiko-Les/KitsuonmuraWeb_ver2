@@ -195,6 +195,36 @@ export interface FlowerGift {
   created_at: string;
 }
 
+export interface MovieCatalogItem {
+  id: string;
+  title: string;
+  original_title: string | null;
+  description: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface CinemaReview {
+  id: string;
+  movie_id: string;
+  user_id: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+}
+
+export interface CinemaFlowerGift {
+  id: string;
+  user_flower_id: string;
+  giver_id: string;
+  recipient_id: string;
+  cinema_review_id: string | null;
+  bloom_id: string | null;
+  created_at: string;
+}
+
 export type VillageVitalityTier = 1 | 2 | 3 | 4;
 
 export interface VillageStatus {
