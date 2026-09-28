@@ -38,6 +38,7 @@ export default async function BonfirePage() {
       supabase
         .from("bonfire_posts")
         .select("*")
+        .is("deleted_at", null)
         .order("created_at", { ascending: false })
         .limit(100),
       supabase

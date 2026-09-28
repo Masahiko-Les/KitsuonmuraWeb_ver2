@@ -23,10 +23,16 @@ alter table public.bonfire_posts enable row level security;
 -- project setting. anon gets nothing.
 grant select, insert, update, delete on public.bonfire_posts to authenticated;
 
+-- "or user_id = auth.uid()" lets the author still satisfy this policy for
+-- their own row even after deleted_at is set — without it, PostgREST's
+-- soft-delete UPDATE (which always needs the resulting row to pass a
+-- SELECT check) is itself rejected by RLS. See
+-- 20250101000019_soft_delete_rls_fix.sql. App queries still filter
+-- `.is("deleted_at", null)` explicitly so a deleted post never reappears.
 create policy "bonfire_posts_select_authenticated"
   on public.bonfire_posts for select
   to authenticated
-  using (deleted_at is null);
+  using (deleted_at is null or user_id = auth.uid());
 
 create policy "bonfire_posts_insert_own"
   on public.bonfire_posts for insert
