@@ -40,12 +40,21 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
   const [labelsRevealed, setLabelsRevealed] = useState(false);
 
   // Touch devices have no hover, so hotspot labels are otherwise invisible
-  // until you happen to land on one. The first tap anywhere on the map
-  // just reveals every label instead of navigating; a second tap on a
-  // hotspot then follows it as normal. Handled on each Link directly
-  // (rather than via a delegated handler on the wrapper) so there's no
-  // dependency on event-bubbling order for the preventDefault to land
-  // before the tap's default navigation.
+  // until you happen to land on one. The first tap anywhere on the map —
+  // including empty areas with no hotspot — just reveals every label
+  // instead of navigating; a second tap on a hotspot then follows it as
+  // normal. Needs both handlers below: the wrapper one covers taps that
+  // land outside any hotspot, but a hotspot tap also needs its own
+  // handler because relying solely on the delegated wrapper handler's
+  // preventDefault() wasn't reliably stopping that same tap's default
+  // navigation on real iOS Safari.
+  function handleMapClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (isTouchDevice && !labelsRevealed) {
+      event.preventDefault();
+      setLabelsRevealed(true);
+    }
+  }
+
   function handleHotspotClick(event: React.MouseEvent<HTMLAnchorElement>) {
     if (isTouchDevice && !labelsRevealed) {
       event.preventDefault();
@@ -54,7 +63,10 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
   }
 
   return (
-    <div className="relative -mx-4 aspect-square w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border">
+    <div
+      onClick={handleMapClick}
+      className="relative -mx-4 aspect-square w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border"
+    >
       <Image
         src={visual.image}
         alt="村の地図"
