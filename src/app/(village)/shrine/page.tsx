@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
-import type { VillageStatus } from "@/types/database";
 import { offerCropAction } from "./actions";
 
 interface UnofferedCrop {
@@ -12,16 +11,19 @@ interface UnofferedCrop {
 export default async function ShrinePage() {
   const { supabase } = await requireProfile();
 
-  const [{ data: statusData }, { data: cropsData }] = await Promise.all([
-    supabase.rpc("get_village_status"),
-    supabase
-      .from("user_crops")
-      .select("id, harvests(crop_catalog(name, emoji))")
-      .is("offered_at", null)
-      .order("created_at", { ascending: true }),
-  ]);
+  const { data: cropsData } = await supabase
+    .from("user_crops")
+    .select("id, harvests(crop_catalog(name, emoji))")
+    .is("offered_at", null)
+    .order("created_at", { ascending: true });
 
-  const status = statusData as VillageStatus | null;
+  // Village vitality's status message is temporarily disabled along with
+  // the map darkening in /village (see that file) — pinned to the tier-1
+  // message so it never alarms first-time visitors. The backend is
+  // untouched. Revert to
+  // `const { data } = await supabase.rpc("get_village_status"); const
+  // status = data as VillageStatus | null;` to re-enable.
+  const status = { message: "村にはあたたかな気配が満ちています" };
   const crops = (cropsData ?? []) as unknown as UnofferedCrop[];
 
   return (

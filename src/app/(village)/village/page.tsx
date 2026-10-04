@@ -1,13 +1,17 @@
 import { requireProfile } from "@/lib/guards";
 import { VillageMap } from "@/components/VillageMap";
-import type { VillageStatus, VillageVitalityTier } from "@/types/database";
+import type { VillageVitalityTier } from "@/types/database";
 
 export default async function VillagePage() {
-  const { supabase, profile } = await requireProfile();
+  const { profile } = await requireProfile();
 
-  const { data } = await supabase.rpc("get_village_status");
-  const status = data as VillageStatus | null;
-  const tier: VillageVitalityTier = status?.tier ?? 1;
+  // Village vitality's visual feedback (map darkening as tier rises) is
+  // temporarily disabled: it was surprising first-time visitors. The
+  // backend (decay, offerings, get_village_status()) is untouched — this
+  // just pins the map to its brightest look. Revert to
+  // `const { data } = await supabase.rpc("get_village_status"); const tier
+  // = (data as VillageStatus | null)?.tier ?? 1;` to re-enable.
+  const tier: VillageVitalityTier = 1;
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-8">
