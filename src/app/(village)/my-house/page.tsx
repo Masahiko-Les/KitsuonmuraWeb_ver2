@@ -136,6 +136,15 @@ export default async function MyHousePage() {
 
       <section className="mt-8 flex flex-col gap-4">
         <h2 className="text-sm font-medium text-village-ink/80">
+          村長からもらったバッジ
+        </h2>
+        <p className="text-center text-sm text-village-ink/50">
+          村に貢献すると、村長からバッジがもらえます。
+        </p>
+      </section>
+
+      <section className="mt-8 flex flex-col gap-4">
+        <h2 className="text-sm font-medium text-village-ink/80">
           自分の住民票
         </h2>
         <ProfileCard profile={profile} />
