@@ -13,6 +13,14 @@ export default async function SettingsPage() {
       <ul className="flex flex-col divide-y divide-village-border overflow-hidden rounded-xl border border-village-border bg-village-paper">
         <li>
           <Link
+            href="/guide"
+            className="block px-4 py-3.5 text-sm text-village-ink transition-colors hover:bg-village-ink/5"
+          >
+            初めての方へ
+          </Link>
+        </li>
+        <li>
+          <Link
             href="/town-hall"
             className="block px-4 py-3.5 text-sm text-village-ink transition-colors hover:bg-village-ink/5"
           >
