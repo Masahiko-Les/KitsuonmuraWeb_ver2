@@ -1,5 +1,7 @@
+import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { VillageMap } from "@/components/VillageMap";
+import { mapHotspots } from "@/config/mapHotspots";
 import type { VillageVitalityTier } from "@/types/database";
 
 export default async function VillagePage() {
@@ -34,6 +36,19 @@ export default async function VillagePage() {
       <p className="mt-6 text-center text-sm text-village-ink/50">
         地図の上の建物をクリックすると、それぞれの場所に移動します。
       </p>
+
+      <ul className="mt-4 grid grid-cols-2 gap-2 sm:hidden">
+        {mapHotspots.map((spot) => (
+          <li key={spot.id}>
+            <Link
+              href={spot.route}
+              className="block rounded-lg border border-village-border bg-village-paper px-3 py-2.5 text-center text-sm text-village-ink transition-colors hover:bg-village-ink/5"
+            >
+              {spot.facility}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
