@@ -104,4 +104,22 @@ export const mapHotspots: MapHotspot[] = [
     height: 15,
     route: "/radio-station",
   },
+  {
+    id: "dev-station",
+    facility: "開発局",
+    x: 32,
+    y: 66,
+    width: 12,
+    height: 12,
+    route: "/dev-station",
+  },
+  {
+    id: "outside-world",
+    facility: "外の世界へ",
+    x: 4,
+    y: 70,
+    width: 16,
+    height: 16,
+    route: "/outside-world",
+  },
 ];
