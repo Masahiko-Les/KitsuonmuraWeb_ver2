@@ -95,4 +95,13 @@ export const mapHotspots: MapHotspot[] = [
     height: 17,
     route: "/field",
   },
+  {
+    id: "radio-station",
+    facility: "ラジオ局",
+    x: 5,
+    y: 47,
+    width: 11,
+    height: 15,
+    route: "/radio-station",
+  },
 ];
