@@ -7,14 +7,21 @@ import { mapHotspots } from "@/config/mapHotspots";
 import { VILLAGE_TIER_VISUALS } from "@/config/villageVisuals";
 import type { VillageVitalityTier } from "@/types/database";
 
+// `(hover: none)` is unreliable for this on real iOS Safari (it has a long
+// history of inconsistently reporting hover capability on touchscreens,
+// unlike Chromium's touch emulation used in earlier testing here), which
+// let the first tap fall through to navigation instead of just revealing
+// labels. `(pointer: coarse)` — "the primary pointer is imprecise" — is the
+// media feature actually meant for this touch-vs-mouse distinction and is
+// consistently supported across iOS Safari and Chromium alike.
 function subscribeToHoverCapability(callback: () => void) {
-  const mql = window.matchMedia("(hover: none)");
+  const mql = window.matchMedia("(pointer: coarse)");
   mql.addEventListener("change", callback);
   return () => mql.removeEventListener("change", callback);
 }
 
 function getHoverCapabilitySnapshot() {
-  return window.matchMedia("(hover: none)").matches;
+  return window.matchMedia("(pointer: coarse)").matches;
 }
 
 function getHoverCapabilityServerSnapshot() {
@@ -32,11 +39,14 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
   );
   const [labelsRevealed, setLabelsRevealed] = useState(false);
 
-  function handleMapClick(event: React.MouseEvent<HTMLDivElement>) {
-    // Touch devices have no hover, so hotspot labels are otherwise
-    // invisible until you happen to land on one. The first tap anywhere
-    // on the map just reveals every label instead of navigating; a
-    // second tap on a hotspot then follows it as normal.
+  // Touch devices have no hover, so hotspot labels are otherwise invisible
+  // until you happen to land on one. The first tap anywhere on the map
+  // just reveals every label instead of navigating; a second tap on a
+  // hotspot then follows it as normal. Handled on each Link directly
+  // (rather than via a delegated handler on the wrapper) so there's no
+  // dependency on event-bubbling order for the preventDefault to land
+  // before the tap's default navigation.
+  function handleHotspotClick(event: React.MouseEvent<HTMLAnchorElement>) {
     if (isTouchDevice && !labelsRevealed) {
       event.preventDefault();
       setLabelsRevealed(true);
@@ -44,10 +54,7 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
   }
 
   return (
-    <div
-      onClick={handleMapClick}
-      className="relative -mx-4 aspect-square w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border"
-    >
+    <div className="relative -mx-4 aspect-square w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border">
       <Image
         src={visual.image}
         alt="村の地図"
@@ -67,6 +74,7 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
           key={spot.id}
           href={spot.route}
           aria-label={spot.facility}
+          onClick={handleHotspotClick}
           style={{
             left: `${spot.x}%`,
             top: `${spot.y}%`,
