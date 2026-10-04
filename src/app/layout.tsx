@@ -1,17 +1,31 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP, Shippori_Mincho } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const bodyFont = Noto_Sans_JP({
+// Self-hosted instead of next/font/google: Turbopack's dev-time fetch of
+// these files from fonts.gstatic.com was timing out intermittently on this
+// machine's network, breaking every `next dev` run. These are the same
+// Noto Sans JP / Shippori Mincho files, subset to just the Latin range
+// Google's own "latin" subset covers (see OFL-*.txt for license/
+// attribution; the actual visible Japanese text always rendered via the
+// browser's system fonts regardless, since subsets: ["latin"] never
+// included Japanese glyphs in the first place).
+const bodyFont = localFont({
   variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  src: [
+    { path: "./fonts/noto-sans-jp-latin-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/noto-sans-jp-latin-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/noto-sans-jp-latin-700.woff2", weight: "700", style: "normal" },
+  ],
 });
 
-const headingFont = Shippori_Mincho({
+const headingFont = localFont({
   variable: "--font-heading",
-  subsets: ["latin"],
-  weight: ["400", "600", "800"],
+  src: [
+    { path: "./fonts/shippori-mincho-latin-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/shippori-mincho-latin-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/shippori-mincho-latin-800.woff2", weight: "800", style: "normal" },
+  ],
 });
 
 export const metadata: Metadata = {
