@@ -12,7 +12,7 @@ export interface VillageTierVisual {
 export const VILLAGE_TIER_VISUALS: Record<VillageVitalityTier, VillageTierVisual> = {
   1: {
     image: "/village-map.jpg",
-    imageClassName: "saturate-110 brightness-105",
+    imageClassName: "saturate-110 brightness-90",
   },
   2: {
     image: "/village-map.jpg",
