@@ -5,7 +5,7 @@ export default function SignupPage() {
   return (
     <main className="relative flex flex-1 items-center justify-center overflow-hidden px-4 py-16">
       <Image
-        src="/village-map.png"
+        src="/village-map.jpg"
         alt=""
         fill
         priority

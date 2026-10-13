@@ -16,7 +16,7 @@ export default async function HomePage() {
   return (
     <main className="relative flex flex-1 items-center justify-center overflow-hidden">
       <Image
-        src="/village-map.png"
+        src="/village-map.jpg"
         alt=""
         fill
         priority

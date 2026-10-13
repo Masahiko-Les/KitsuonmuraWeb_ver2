@@ -1,4 +1,4 @@
-// Clickable areas overlaid on /public/village-map.png.
+// Clickable areas overlaid on /public/village-map.jpg.
 // x / y / width / height are percentages (0-100) of the image's rendered
 // size, so they stay correct at any responsive scale. Adjust these numbers
 // to line up with the artwork; no code changes needed elsewhere.
