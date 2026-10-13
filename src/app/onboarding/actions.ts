@@ -29,6 +29,7 @@ export async function createProfileAction(
   const favoriteThings = String(formData.get("favorite_things") ?? "").trim();
   const stutterTypes = formData.getAll("stutter_types").map(String);
   const difficultSounds = formData.getAll("difficult_sounds").map(String);
+  const difficultWords = formData.getAll("difficult_words").map(String);
   const difficultSituations = String(formData.get("difficult_situations") ?? "").trim();
   const easySituations = String(formData.get("easy_situations") ?? "").trim();
   const firstNoticedStutter = String(formData.get("first_noticed_stutter") ?? "").trim();
@@ -40,6 +41,7 @@ export async function createProfileAction(
     favorite_things: favoriteThings || null,
     stutter_types: stutterTypes,
     difficult_sounds: difficultSounds,
+    difficult_words: difficultWords,
     difficult_situations: difficultSituations || null,
     easy_situations: easySituations || null,
     first_noticed_stutter: firstNoticedStutter || null,

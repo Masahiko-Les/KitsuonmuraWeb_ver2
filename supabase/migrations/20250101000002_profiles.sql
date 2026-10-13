@@ -8,6 +8,7 @@ create table public.profiles (
   favorite_things text check (favorite_things is null or char_length(favorite_things) <= 2000),
   stutter_types text[] not null default '{}',
   difficult_sounds text[] not null default '{}',
+  difficult_words text[] not null default '{}',
   difficult_situations text check (difficult_situations is null or char_length(difficult_situations) <= 2000),
   easy_situations text check (easy_situations is null or char_length(easy_situations) <= 2000),
   first_noticed_stutter text check (first_noticed_stutter is null or char_length(first_noticed_stutter) <= 2000),

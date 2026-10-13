@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { StutterTypesFieldset } from "@/components/StutterTypesFieldset";
 import { DifficultSoundsFieldset } from "@/components/DifficultSoundsFieldset";
+import { DifficultWordsFieldset } from "@/components/DifficultWordsFieldset";
 import { createProfileAction, type OnboardingFormState } from "./actions";
 
 const initialState: OnboardingFormState = {};
@@ -57,6 +58,7 @@ export function OnboardingForm() {
 
       <StutterTypesFieldset />
       <DifficultSoundsFieldset />
+      <DifficultWordsFieldset />
 
       <div className="flex flex-col gap-1">
         <label htmlFor="difficult_situations" className="text-sm text-village-ink/80">
@@ -86,13 +88,14 @@ export function OnboardingForm() {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="first_noticed_stutter" className="text-sm text-village-ink/80">
-          初めて吃音に気づいた時のこと（任意）
+          自分の吃音史（任意）
         </label>
         <textarea
           id="first_noticed_stutter"
           name="first_noticed_stutter"
           rows={3}
           maxLength={2000}
+          placeholder="初めて吃音に気づいた時のことから、今までの吃音について書ける範囲で書いてください"
           className="rounded-lg border border-village-border bg-white px-4 py-2 text-village-ink outline-none focus:border-village-ember"
         />
       </div>

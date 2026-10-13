@@ -31,6 +31,7 @@ export interface Profile {
   favorite_things: string | null;
   stutter_types: string[];
   difficult_sounds: string[];
+  difficult_words: string[];
   difficult_situations: string | null;
   easy_situations: string | null;
   first_noticed_stutter: string | null;

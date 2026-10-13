@@ -46,6 +46,22 @@ export function ProfileCard({ profile }: { profile: Profile }) {
         </div>
       ) : null}
 
+      {profile.difficult_words.length > 0 ? (
+        <div className="mt-4">
+          <p className="mb-1 text-xs text-village-ink/50">言いにくい言葉</p>
+          <div className="flex flex-wrap gap-1.5">
+            {profile.difficult_words.map((word) => (
+              <span
+                key={word}
+                className="rounded-full bg-village-ember/10 px-3 py-1 text-xs text-village-ember"
+              >
+                {word}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
       {profile.difficult_situations ? (
         <LabeledText
           label="吃音が出やすい場面"
@@ -59,7 +75,7 @@ export function ProfileCard({ profile }: { profile: Profile }) {
 
       {profile.first_noticed_stutter ? (
         <LabeledText
-          label="初めて吃音に気づいた時のこと"
+          label="自分の吃音史"
           text={profile.first_noticed_stutter}
         />
       ) : null}

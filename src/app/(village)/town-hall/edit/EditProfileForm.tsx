@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { StutterTypesFieldset } from "@/components/StutterTypesFieldset";
 import { DifficultSoundsFieldset } from "@/components/DifficultSoundsFieldset";
+import { DifficultWordsFieldset } from "@/components/DifficultWordsFieldset";
 import type { Profile } from "@/types/database";
 import { updateProfileAction, type EditProfileFormState } from "./actions";
 
@@ -61,6 +62,7 @@ export function EditProfileForm({ profile }: { profile: Profile }) {
 
       <StutterTypesFieldset defaultValues={profile.stutter_types} />
       <DifficultSoundsFieldset defaultValues={profile.difficult_sounds} />
+      <DifficultWordsFieldset defaultValues={profile.difficult_words} />
 
       <div className="flex flex-col gap-1">
         <label htmlFor="difficult_situations" className="text-sm text-village-ink/80">
@@ -92,7 +94,7 @@ export function EditProfileForm({ profile }: { profile: Profile }) {
 
       <div className="flex flex-col gap-1">
         <label htmlFor="first_noticed_stutter" className="text-sm text-village-ink/80">
-          初めて吃音に気づいた時のこと（任意）
+          自分の吃音史（任意）
         </label>
         <textarea
           id="first_noticed_stutter"
@@ -100,6 +102,7 @@ export function EditProfileForm({ profile }: { profile: Profile }) {
           rows={3}
           maxLength={2000}
           defaultValue={profile.first_noticed_stutter ?? ""}
+          placeholder="初めて吃音に気づいた時のことから、今までの吃音について書ける範囲で書いてください"
           className="rounded-lg border border-village-border bg-white px-4 py-2 text-village-ink outline-none focus:border-village-ember"
         />
       </div>
