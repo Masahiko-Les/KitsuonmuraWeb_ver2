@@ -40,35 +40,38 @@ export default async function MovieDetailPage({
   const { movieId } = await params;
   const { supabase, user } = await requireProfile();
 
-  const { data: movieData } = await supabase
-    .from("movie_catalog")
-    .select("*")
-    .eq("id", movieId)
-    .eq("is_active", true)
-    .maybeSingle();
+  const [
+    { data: movieData },
+    { data: reviewsData },
+    { data: giftableFlowersData },
+    { data: reviewGiftsData },
+  ] = await Promise.all([
+    supabase
+      .from("movie_catalog")
+      .select("*")
+      .eq("id", movieId)
+      .eq("is_active", true)
+      .maybeSingle(),
+    supabase
+      .from("cinema_reviews")
+      .select("*")
+      .eq("movie_id", movieId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("user_flowers")
+      .select("id, desert_blooms(flower_catalog(name, emoji))")
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("cinema_flower_gifts")
+      .select("id, cinema_review_id, desert_blooms(flower_catalog(name, emoji))"),
+  ]);
 
   const movie = movieData as MovieCatalogItem | null;
   if (!movie) {
     notFound();
   }
-
-  const [{ data: reviewsData }, { data: giftableFlowersData }, { data: reviewGiftsData }] =
-    await Promise.all([
-      supabase
-        .from("cinema_reviews")
-        .select("*")
-        .eq("movie_id", movieId)
-        .is("deleted_at", null)
-        .order("created_at", { ascending: false })
-        .limit(100),
-      supabase
-        .from("user_flowers")
-        .select("id, desert_blooms(flower_catalog(name, emoji))")
-        .order("created_at", { ascending: true }),
-      supabase
-        .from("cinema_flower_gifts")
-        .select("id, cinema_review_id, desert_blooms(flower_catalog(name, emoji))"),
-    ]);
 
   const reviews = (reviewsData ?? []) as CinemaReview[];
   const userIds = [...new Set(reviews.map((review) => review.user_id))];

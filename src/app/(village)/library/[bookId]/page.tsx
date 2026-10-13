@@ -40,35 +40,38 @@ export default async function BookDetailPage({
   const { bookId } = await params;
   const { supabase, user } = await requireProfile();
 
-  const { data: bookData } = await supabase
-    .from("book_catalog")
-    .select("*")
-    .eq("id", bookId)
-    .eq("is_active", true)
-    .maybeSingle();
+  const [
+    { data: bookData },
+    { data: reviewsData },
+    { data: giftableFlowersData },
+    { data: reviewGiftsData },
+  ] = await Promise.all([
+    supabase
+      .from("book_catalog")
+      .select("*")
+      .eq("id", bookId)
+      .eq("is_active", true)
+      .maybeSingle(),
+    supabase
+      .from("library_reviews")
+      .select("*")
+      .eq("book_id", bookId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("user_flowers")
+      .select("id, desert_blooms(flower_catalog(name, emoji))")
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("flower_gifts")
+      .select("id, library_review_id, desert_blooms(flower_catalog(name, emoji))"),
+  ]);
 
   const book = bookData as BookCatalogItem | null;
   if (!book) {
     notFound();
   }
-
-  const [{ data: reviewsData }, { data: giftableFlowersData }, { data: reviewGiftsData }] =
-    await Promise.all([
-      supabase
-        .from("library_reviews")
-        .select("*")
-        .eq("book_id", bookId)
-        .is("deleted_at", null)
-        .order("created_at", { ascending: false })
-        .limit(100),
-      supabase
-        .from("user_flowers")
-        .select("id, desert_blooms(flower_catalog(name, emoji))")
-        .order("created_at", { ascending: true }),
-      supabase
-        .from("flower_gifts")
-        .select("id, library_review_id, desert_blooms(flower_catalog(name, emoji))"),
-    ]);
 
   const reviews = (reviewsData ?? []) as LibraryReview[];
   const userIds = [...new Set(reviews.map((review) => review.user_id))];
