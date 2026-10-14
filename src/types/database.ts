@@ -39,12 +39,13 @@ export interface Profile {
   updated_at: string;
 }
 
-export type SeedStatus = "seed" | "growing" | "harvested";
+export type SeedStatus = "seed" | "growing" | "ripening" | "harvested";
 export type SeedKind = "community" | "own_field";
 
 export const SEED_STATUS_LABEL: Record<SeedStatus, string> = {
   seed: "種",
   growing: "芽が出た",
+  ripening: "実りを待っています",
   harvested: "収穫",
 };
 
@@ -65,6 +66,7 @@ export interface GardenSeed {
   kind: SeedKind;
   harvest_count: number;
   last_watered_date: string | null;
+  ready_at: string | null;
   created_at: string;
   harvested_at: string | null;
 }
@@ -97,6 +99,12 @@ export interface UserCrop {
   harvest_id: string;
   offered_at: string | null;
   created_at: string;
+}
+
+export interface GardenHarvestClaim {
+  harvest_id: string;
+  user_id: string;
+  claimed_at: string;
 }
 
 export interface Offering {

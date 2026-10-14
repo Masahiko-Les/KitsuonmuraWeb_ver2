@@ -42,3 +42,10 @@ export async function waterSeedAction(seedId: string) {
   await supabase.rpc("water_seed", { p_seed_id: seedId });
   revalidatePath("/garden");
 }
+
+export async function claimGardenHarvestAction(seedId: string) {
+  const supabase = await createClient();
+  await supabase.rpc("claim_garden_harvest", { p_seed_id: seedId });
+  revalidatePath("/village");
+  revalidatePath("/garden");
+}

@@ -69,7 +69,11 @@ export default async function GardenPage() {
           const planter = profileByUserId.get(seed.user_id);
           const isOwn = seed.user_id === user.id;
           const alreadyWatered = wateredSeedIds.has(seed.id);
-          const canWater = !isOwn && seed.status !== "harvested" && !alreadyWatered;
+          const canWater =
+            !isOwn &&
+            seed.status !== "ripening" &&
+            seed.status !== "harvested" &&
+            !alreadyWatered;
           const crop = cropBySeedId.get(seed.id);
           const statusLabel = SEED_STATUS_LABEL[seed.status as SeedStatus];
 

@@ -49,7 +49,10 @@ create table public.garden_seeds (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
   struggle text not null check (char_length(trim(struggle)) > 0 and char_length(struggle) <= 2000),
-  status text not null default 'seed' check (status in ('seed', 'growing', 'harvested')),
+  -- 'ripening': kind=community only, water_seed()'s threshold was met but
+  -- the crop isn't decided/distributed yet — that happens the next day at
+  -- the earliest, when an eligible recipient calls claim_garden_harvest().
+  status text not null default 'seed' check (status in ('seed', 'growing', 'ripening', 'harvested')),
   -- 'community' seeds are the shared 農園 (a struggle, watered by others).
   -- 'own_field' seeds are 自分の家の畑 (an accomplishment, watered only by
   -- the planter, repeatedly, up to harvest_count = 10). Shared table so
@@ -61,6 +64,9 @@ create table public.garden_seeds (
   -- watered (at most once per day).
   harvest_count int not null default 0,
   last_watered_date date,
+  -- Only meaningful while status='ripening': the earliest calendar date
+  -- claim_garden_harvest() is allowed to finalize this seed's harvest.
+  ready_at date,
   created_at timestamptz not null default now(),
   harvested_at timestamptz
 );
@@ -164,10 +170,36 @@ create policy "user_crops_select_own"
 -- Distributed only by water_seed(); offered_at is only ever updated by
 -- make_offering() in the shrine migration. No client-facing write policies.
 
+-- Permanent record of "this person clicked 受け取る for this harvest",
+-- independent of user_crops (which gift_crop() can later move to someone
+-- else). Without this, a recipient could gift their crop away via 焚き火
+-- and then claim the same harvest again, since re-checking user_crops
+-- alone can't tell "never claimed" apart from "claimed, then gave it away".
+create table public.garden_harvest_claims (
+  harvest_id uuid not null references public.harvests(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  claimed_at timestamptz not null default now(),
+  primary key (harvest_id, user_id)
+);
+
+alter table public.garden_harvest_claims enable row level security;
+
+grant select on public.garden_harvest_claims to authenticated;
+
+create policy "garden_harvest_claims_select_own"
+  on public.garden_harvest_claims for select
+  to authenticated
+  using (user_id = auth.uid());
+
+-- No insert policy: only claim_garden_harvest() may create these rows.
+
 -- Atomically records a watering and, once the seed has been watered
--- harvest_water_count times, harvests it and distributes the crop to the
--- planter and every waterer. The row lock on garden_seeds serializes
--- concurrent waterings of the same seed so a harvest can never double-fire.
+-- harvest_water_count times, marks it 'ripening' with ready_at set to
+-- tomorrow. The row lock on garden_seeds serializes concurrent waterings
+-- of the same seed so this can never double-fire. Deliberately does NOT
+-- decide the crop or distribute it here anymore — see
+-- claim_garden_harvest() below, which only an eligible recipient can call,
+-- and only once ready_at has arrived.
 create or replace function public.water_seed(p_seed_id uuid)
 returns json
 language plpgsql
@@ -179,8 +211,6 @@ declare
   v_seed public.garden_seeds%rowtype;
   v_required int;
   v_count int;
-  v_crop_id uuid;
-  v_harvest_id uuid;
 begin
   if v_user_id is null then
     raise exception 'authentication required';
@@ -195,7 +225,7 @@ begin
     raise exception 'cannot water your own seed';
   end if;
 
-  if v_seed.status = 'harvested' then
+  if v_seed.status in ('ripening', 'harvested') then
     raise exception 'seed already harvested';
   end if;
 
@@ -205,6 +235,71 @@ begin
   select count(*) into v_count from public.waterings where seed_id = p_seed_id;
 
   if v_count >= v_required then
+    update public.garden_seeds
+      set status = 'ripening', ready_at = current_date + 1
+      where id = p_seed_id;
+
+    return json_build_object(
+      'status', 'ripening',
+      'ready_at', (current_date + 1)
+    );
+  end if;
+
+  update public.garden_seeds
+    set status = 'growing'
+    where id = p_seed_id and status <> 'growing';
+
+  return json_build_object('status', 'growing', 'water_count', v_count, 'required', v_required);
+end;
+$$;
+
+revoke all on function public.water_seed(uuid) from public;
+grant execute on function public.water_seed(uuid) to authenticated;
+
+-- Finalizes (first call) and/or claims a ripened community-garden harvest.
+-- The row lock on garden_seeds serializes concurrent claims of the same
+-- seed, so the crop species is only ever decided once — the first
+-- eligible person to claim locks it in for everyone, via the harvests row
+-- that already exists by the time later claimers run.
+create or replace function public.claim_garden_harvest(p_seed_id uuid)
+returns json
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_user_id uuid := auth.uid();
+  v_seed public.garden_seeds%rowtype;
+  v_is_eligible boolean;
+  v_crop_id uuid;
+  v_harvest_id uuid;
+begin
+  if v_user_id is null then
+    raise exception 'authentication required';
+  end if;
+
+  select * into v_seed from public.garden_seeds where id = p_seed_id for update;
+  if not found then
+    raise exception 'seed not found';
+  end if;
+
+  if v_seed.kind <> 'community' then
+    raise exception 'not a community garden seed';
+  end if;
+
+  select (v_seed.user_id = v_user_id) or exists (
+    select 1 from public.waterings where seed_id = p_seed_id and user_id = v_user_id
+  ) into v_is_eligible;
+
+  if not v_is_eligible then
+    raise exception 'not eligible to claim this harvest';
+  end if;
+
+  if v_seed.status = 'ripening' then
+    if v_seed.ready_at is null or v_seed.ready_at > current_date then
+      raise exception 'not ready yet';
+    end if;
+
     select id into v_crop_id
       from public.crop_catalog
       where is_active
@@ -222,33 +317,33 @@ begin
     update public.garden_seeds
       set status = 'harvested', harvested_at = now()
       where id = p_seed_id;
-
-    insert into public.user_crops (user_id, harvest_id)
-    select distinct recipient, v_harvest_id
-      from (
-        select v_seed.user_id as recipient
-        union
-        select user_id from public.waterings where seed_id = p_seed_id
-      ) recipients
-    on conflict (user_id, harvest_id) do nothing;
-
-    return json_build_object(
-      'status', 'harvested',
-      'crop_id', v_crop_id,
-      'harvest_id', v_harvest_id
-    );
+  elsif v_seed.status = 'harvested' then
+    select id into v_harvest_id from public.harvests where seed_id = p_seed_id;
+  else
+    raise exception 'not ready yet';
   end if;
 
-  update public.garden_seeds
-    set status = 'growing'
-    where id = p_seed_id and status <> 'growing';
+  -- Permanent check: if this user already claimed this exact harvest
+  -- before (even if they've since gifted the crop away and no longer
+  -- hold it in user_crops), do nothing rather than granting a second one.
+  if exists (
+    select 1 from public.garden_harvest_claims
+    where harvest_id = v_harvest_id and user_id = v_user_id
+  ) then
+    return json_build_object('status', 'already_claimed', 'harvest_id', v_harvest_id);
+  end if;
 
-  return json_build_object('status', 'growing', 'water_count', v_count, 'required', v_required);
+  insert into public.garden_harvest_claims (harvest_id, user_id) values (v_harvest_id, v_user_id);
+
+  insert into public.user_crops (user_id, harvest_id) values (v_user_id, v_harvest_id)
+    on conflict (user_id, harvest_id) do nothing;
+
+  return json_build_object('status', 'ok', 'harvest_id', v_harvest_id);
 end;
 $$;
 
-revoke all on function public.water_seed(uuid) from public;
-grant execute on function public.water_seed(uuid) to authenticated;
+revoke all on function public.claim_garden_harvest(uuid) from public;
+grant execute on function public.claim_garden_harvest(uuid) to authenticated;
 
 -- Waters the caller's own 自分の家の畑 seed: at most once per calendar
 -- day (including the day it was planted), and never past 10 harvests.
