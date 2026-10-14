@@ -105,11 +105,6 @@ export function VillageMap({
               isTouchDevice ? "" : "hover:bg-white/10"
             }`}
           >
-            {isLocked ? (
-              <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-slate-900/35">
-                <span className="text-lg drop-shadow">🔒</span>
-              </div>
-            ) : null}
             <span
               className={`mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink shadow transition-opacity ${
                 isTouchDevice ? "" : "group-hover:opacity-100"
