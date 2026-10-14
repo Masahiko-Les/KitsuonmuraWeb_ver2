@@ -106,9 +106,13 @@ export function VillageMap({
             }`}
           >
             <span
-              className={`mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink shadow transition-opacity ${
-                isTouchDevice ? "" : "group-hover:opacity-100"
-              } ${labelsRevealed ? "opacity-100" : "opacity-0"}`}
+              className={`mb-1 rounded-full px-2 py-0.5 text-xs whitespace-nowrap shadow transition-opacity ${
+                isLocked
+                  ? "bg-gray-300/95 text-village-ink/70"
+                  : "bg-village-paper/95 text-village-ink"
+              } ${isTouchDevice ? "" : "group-hover:opacity-100"} ${
+                labelsRevealed ? "opacity-100" : "opacity-0"
+              }`}
             >
               {isLocked ? "🔒 " : ""}
               {spot.facility}
