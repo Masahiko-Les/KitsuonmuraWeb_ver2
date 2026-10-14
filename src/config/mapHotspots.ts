@@ -125,10 +125,10 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "research-lab",
     facility: "研究所",
-    x: 23,
-    y: 39,
-    width: 11,
-    height: 12,
+    x: 15,
+    y: 33,
+    width: 9,
+    height: 11,
     route: "/research-lab",
   },
 ];
