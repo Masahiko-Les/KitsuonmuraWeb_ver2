@@ -28,7 +28,13 @@ function getHoverCapabilityServerSnapshot() {
   return false;
 }
 
-export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
+export function VillageMap({
+  tier,
+  unlockedFacilityKeys,
+}: {
+  tier: VillageVitalityTier;
+  unlockedFacilityKeys: Set<string>;
+}) {
   const visual = VILLAGE_TIER_VISUALS[tier];
   // React's recommended pattern for reading browser-only state (avoids the
   // SSR/hydration mismatch a useState+useEffect version would have).
@@ -81,31 +87,40 @@ export function VillageMap({ tier }: { tier: VillageVitalityTier }) {
         />
       ) : null}
 
-      {mapHotspots.map((spot) => (
-        <Link
-          key={spot.id}
-          href={spot.route}
-          aria-label={spot.facility}
-          onClick={handleHotspotClick}
-          style={{
-            left: `${spot.x}%`,
-            top: `${spot.y}%`,
-            width: `${spot.width}%`,
-            height: `${spot.height}%`,
-          }}
-          className={`group absolute flex items-end justify-center rounded-lg transition-colors ${
-            isTouchDevice ? "" : "hover:bg-white/10"
-          }`}
-        >
-          <span
-            className={`mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink shadow transition-opacity ${
-              isTouchDevice ? "" : "group-hover:opacity-100"
-            } ${labelsRevealed ? "opacity-100" : "opacity-0"}`}
+      {mapHotspots.map((spot) => {
+        const isLocked = !unlockedFacilityKeys.has(spot.id);
+        return (
+          <Link
+            key={spot.id}
+            href={spot.route}
+            aria-label={spot.facility}
+            onClick={handleHotspotClick}
+            style={{
+              left: `${spot.x}%`,
+              top: `${spot.y}%`,
+              width: `${spot.width}%`,
+              height: `${spot.height}%`,
+            }}
+            className={`group absolute flex items-end justify-center rounded-lg transition-colors ${
+              isTouchDevice ? "" : "hover:bg-white/10"
+            }`}
           >
-            {spot.facility}
-          </span>
-        </Link>
-      ))}
+            {isLocked ? (
+              <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-slate-900/35">
+                <span className="text-lg drop-shadow">🔒</span>
+              </div>
+            ) : null}
+            <span
+              className={`mb-1 rounded-full bg-village-paper/95 px-2 py-0.5 text-xs whitespace-nowrap text-village-ink shadow transition-opacity ${
+                isTouchDevice ? "" : "group-hover:opacity-100"
+              } ${labelsRevealed ? "opacity-100" : "opacity-0"}`}
+            >
+              {isLocked ? "🔒 " : ""}
+              {spot.facility}
+            </span>
+          </Link>
+        );
+      })}
     </div>
   );
 }

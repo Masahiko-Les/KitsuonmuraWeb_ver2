@@ -159,6 +159,8 @@ begin
   insert into public.cinema_flower_gifts (user_flower_id, giver_id, recipient_id, cinema_review_id, bloom_id)
     values (p_user_flower_id, v_user_id, p_recipient_id, p_cinema_review_id, v_flower.bloom_id);
 
+  update public.profiles set gift_count = gift_count + 1 where user_id = v_user_id;
+
   return json_build_object('status', 'ok');
 end;
 $$;

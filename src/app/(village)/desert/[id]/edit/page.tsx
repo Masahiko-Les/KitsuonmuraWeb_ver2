@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { DesertStory } from "@/types/database";
 import { EditDesertStoryForm } from "./EditDesertStoryForm";
 
@@ -10,7 +12,16 @@ export default async function EditDesertStoryPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { supabase, user } = await requireProfile();
+  const { supabase, user, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "desert")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("desert")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const { data } = await supabase
     .from("desert_stories")

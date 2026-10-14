@@ -12,6 +12,13 @@ create table public.profiles (
   difficult_situations text check (difficult_situations is null or char_length(difficult_situations) <= 2000),
   easy_situations text check (easy_situations is null or char_length(easy_situations) <= 2000),
   first_noticed_stutter text check (first_noticed_stutter is null or char_length(first_noticed_stutter) <= 2000),
+  -- Incremented by gift_crop()/gift_flower()/gift_flower_to_cinema_review()
+  -- on every successful gift. Drives the facility-unlock badge system
+  -- (see src/lib/unlocks.ts) — kept here rather than recomputed from
+  -- crop_gifts/flower_gifts/cinema_flower_gifts counts so checking "is
+  -- this facility unlocked" never costs an extra query beyond the
+  -- profile row every page already fetches.
+  gift_count int not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

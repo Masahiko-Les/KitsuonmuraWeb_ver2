@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { LibraryReview } from "@/types/database";
 import { EditLibraryReviewForm } from "./EditLibraryReviewForm";
 
@@ -10,7 +12,16 @@ export default async function EditLibraryReviewPage({
   params: Promise<{ bookId: string; reviewId: string }>;
 }) {
   const { bookId, reviewId } = await params;
-  const { supabase, user } = await requireProfile();
+  const { supabase, user, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "library")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("library")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const { data } = await supabase
     .from("library_reviews")

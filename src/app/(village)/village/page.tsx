@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { VillageMap } from "@/components/VillageMap";
 import { mapHotspots } from "@/config/mapHotspots";
+import { getUnlockedFacilityKeys } from "@/lib/unlocks";
 import type {
   GardenHarvestClaim,
   GardenSeed,
@@ -38,6 +39,7 @@ export default async function VillagePage() {
   const tier: VillageVitalityTier = 1;
 
   const readyHarvests = await getReadyGardenHarvests(supabase, user.id);
+  const unlockedFacilityKeys = getUnlockedFacilityKeys(profile.gift_count);
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-8">
@@ -83,23 +85,31 @@ export default async function VillagePage() {
         </ul>
       ) : null}
 
-      <VillageMap tier={tier} />
+      <VillageMap tier={tier} unlockedFacilityKeys={unlockedFacilityKeys} />
 
       <p className="mt-6 text-center text-sm text-village-ink/50">
         地図の上の建物をクリックすると、それぞれの場所に移動します。
       </p>
 
       <ul className="mt-4 grid grid-cols-2 gap-2 sm:hidden">
-        {mapHotspots.map((spot) => (
-          <li key={spot.id}>
-            <Link
-              href={spot.route}
-              className="block rounded-lg border border-village-border bg-village-paper px-3 py-2.5 text-center text-sm text-village-ink transition-colors hover:bg-village-ink/5"
-            >
-              {spot.facility}
-            </Link>
-          </li>
-        ))}
+        {mapHotspots.map((spot) => {
+          const isLocked = !unlockedFacilityKeys.has(spot.id);
+          return (
+            <li key={spot.id}>
+              <Link
+                href={spot.route}
+                className={`block rounded-lg border px-3 py-2.5 text-center text-sm transition-colors ${
+                  isLocked
+                    ? "border-village-border/60 bg-village-ink/5 text-village-ink/40"
+                    : "border-village-border bg-village-paper text-village-ink hover:bg-village-ink/5"
+                }`}
+              >
+                {isLocked ? "🔒 " : ""}
+                {spot.facility}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </main>
   );

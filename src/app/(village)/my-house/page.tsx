@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import { ProfileCard } from "@/components/ProfileCard";
+import { BADGES } from "@/lib/unlocks";
 
 interface OwnedCrop {
   id: string;
@@ -138,9 +139,37 @@ export default async function MyHousePage() {
         <h2 className="text-sm font-medium text-village-ink/80">
           村長からもらったバッジ
         </h2>
-        <p className="text-center text-sm text-village-ink/50">
-          村に貢献すると、村長からバッジがもらえます。
+        <p className="text-center text-sm text-village-ink/60">
+          これまでに収穫物を{profile.gift_count}回、村人にあげました。
         </p>
+        <ul className="flex flex-col gap-3">
+          {BADGES.map((badge) => {
+            const earned = profile.gift_count >= badge.requiredGifts;
+            return (
+              <li
+                key={badge.badgeNumber}
+                className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
+                  earned
+                    ? "border-village-border bg-white"
+                    : "border-village-border/60 bg-village-ink/5"
+                }`}
+              >
+                <span
+                  className={`text-sm ${
+                    earned ? "text-village-ink" : "text-village-ink/40"
+                  }`}
+                >
+                  {earned ? "🏅" : "🔒"} {badge.facilityLabel}
+                </span>
+                <span className="text-xs text-village-ink/50">
+                  {earned
+                    ? `${badge.requiredGifts}回達成`
+                    : `あと${badge.requiredGifts - profile.gift_count}回`}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </section>
 
       <section className="mt-8 flex flex-col gap-4">

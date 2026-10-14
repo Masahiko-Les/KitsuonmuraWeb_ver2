@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { BookCatalogItem, LibraryReview, Profile } from "@/types/database";
 import { LibraryReviewForm } from "./LibraryReviewForm";
 import { deleteLibraryReviewAction, giftFlowerAction } from "./actions";
@@ -38,7 +40,16 @@ export default async function BookDetailPage({
   params: Promise<{ bookId: string }>;
 }) {
   const { bookId } = await params;
-  const { supabase, user } = await requireProfile();
+  const { supabase, user, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "library")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("library")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const [
     { data: bookData },

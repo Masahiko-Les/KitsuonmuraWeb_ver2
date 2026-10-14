@@ -1,5 +1,7 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { Profile } from "@/types/database";
 
 interface OfferingHistoryRow {
@@ -11,7 +13,16 @@ interface OfferingHistoryRow {
 }
 
 export default async function ShrineBackPage() {
-  const { supabase } = await requireProfile();
+  const { supabase, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "shrine")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("shrine")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const { data } = await supabase.rpc("get_offering_history");
   const offerings = (data ?? []) as OfferingHistoryRow[];

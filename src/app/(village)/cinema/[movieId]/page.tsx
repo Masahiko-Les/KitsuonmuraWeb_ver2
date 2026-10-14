@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { CinemaReview, MovieCatalogItem, Profile } from "@/types/database";
 import { CinemaReviewForm } from "./CinemaReviewForm";
 import { deleteCinemaReviewAction, giftFlowerAction } from "./actions";
@@ -38,7 +40,16 @@ export default async function MovieDetailPage({
   params: Promise<{ movieId: string }>;
 }) {
   const { movieId } = await params;
-  const { supabase, user } = await requireProfile();
+  const { supabase, user, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "cinema")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("cinema")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const [
     { data: movieData },

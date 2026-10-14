@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import { offerCropAction } from "./actions";
 
 interface UnofferedCrop {
@@ -9,7 +11,16 @@ interface UnofferedCrop {
 }
 
 export default async function ShrinePage() {
-  const { supabase } = await requireProfile();
+  const { supabase, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "shrine")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("shrine")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const { data: cropsData } = await supabase
     .from("user_crops")

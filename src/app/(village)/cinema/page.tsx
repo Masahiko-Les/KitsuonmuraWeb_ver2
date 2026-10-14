@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { MovieCatalogItem } from "@/types/database";
 
 export default async function CinemaPage() {
-  const { supabase } = await requireProfile();
+  const { supabase, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "cinema")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("cinema")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const { data: moviesData } = await supabase
     .from("movie_catalog")

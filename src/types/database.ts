@@ -33,6 +33,7 @@ export interface Profile {
   difficult_sounds: string[];
   difficult_words: string[];
   difficult_situations: string | null;
+  gift_count: number;
   easy_situations: string | null;
   first_noticed_stutter: string | null;
   created_at: string;

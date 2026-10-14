@@ -1,10 +1,21 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { BookCatalogItem } from "@/types/database";
 
 export default async function LibraryPage() {
-  const { supabase } = await requireProfile();
+  const { supabase, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "library")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("library")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const { data: booksData } = await supabase
     .from("book_catalog")

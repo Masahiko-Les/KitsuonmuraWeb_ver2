@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { LockedFacility } from "@/components/LockedFacility";
+import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { DesertStory, Profile, StoryStatus } from "@/types/database";
 import { STORY_STATUS_LABEL } from "@/types/database";
 import { DesertStoryForm } from "./DesertStoryForm";
@@ -12,7 +14,16 @@ interface BloomWithFlower {
 }
 
 export default async function DesertPage() {
-  const { supabase, user } = await requireProfile();
+  const { supabase, user, profile } = await requireProfile();
+
+  if (!isFacilityUnlocked(profile.gift_count, "desert")) {
+    return (
+      <LockedFacility
+        badge={getBadgeForFacility("desert")}
+        giftCount={profile.gift_count}
+      />
+    );
+  }
 
   const { data: storiesData } = await supabase
     .from("desert_stories")

@@ -66,6 +66,8 @@ begin
   insert into public.crop_gifts (user_crop_id, giver_id, recipient_id, bonfire_post_id, harvest_id)
     values (p_user_crop_id, v_user_id, p_recipient_id, p_bonfire_post_id, v_crop.harvest_id);
 
+  update public.profiles set gift_count = gift_count + 1 where user_id = v_user_id;
+
   return json_build_object('status', 'ok');
 end;
 $$;
