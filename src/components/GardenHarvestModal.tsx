@@ -30,7 +30,7 @@ export function GardenHarvestModal({
   return (
     <dialog
       ref={dialogRef}
-      className="w-full max-w-md rounded-xl border border-village-border bg-village-paper p-0 backdrop:bg-village-ink/40"
+      className="fixed top-1/2 left-1/2 right-auto bottom-auto m-0 max-h-[80vh] w-[calc(100%-3rem)] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-xl border border-village-border bg-village-paper p-0 backdrop:bg-village-ink/40"
     >
       <div className="flex flex-col gap-4 p-5">
         <div className="flex items-center justify-between">
