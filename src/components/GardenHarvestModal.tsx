@@ -31,7 +31,7 @@ export function GardenHarvestModal({
   return (
     <dialog
       ref={dialogRef}
-      className="fixed inset-0 m-auto flex max-h-[80vh] w-[calc(100%-3rem)] max-w-md flex-col overflow-hidden rounded-xl border border-village-border bg-village-paper p-0 backdrop:bg-village-ink/40"
+      className="fixed inset-0 z-50 m-auto flex max-h-[80vh] w-[calc(100%-3rem)] max-w-md flex-col overflow-hidden rounded-xl border border-village-border bg-village-paper p-0 backdrop:bg-village-ink/40"
     >
       <div className="flex shrink-0 items-center justify-between p-5 pb-4">
         <h2 className="font-serif text-lg text-village-ink">
