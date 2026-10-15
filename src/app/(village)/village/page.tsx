@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { VillageMap } from "@/components/VillageMap";
+import { GardenHarvestModal } from "@/components/GardenHarvestModal";
 import { mapHotspots } from "@/config/mapHotspots";
 import { getUnlockedFacilityKeys } from "@/lib/unlocks";
 import type {
@@ -9,7 +10,6 @@ import type {
   Profile,
   VillageVitalityTier,
 } from "@/types/database";
-import { claimGardenHarvestAction } from "../garden/actions";
 
 interface Watering {
   seed_id: string;
@@ -57,33 +57,7 @@ export default async function VillagePage() {
         </p>
       </div>
 
-      {readyHarvests.length > 0 ? (
-        <ul className="mb-6 flex flex-col gap-3">
-          {readyHarvests.map(({ seed, plantedByPhrase, othersPhrase }) => (
-            <li
-              key={seed.id}
-              data-seed-id={seed.id}
-              className="rounded-xl border border-village-border bg-village-paper p-4"
-            >
-              <p className="text-sm leading-relaxed text-village-ink/90">
-                農園で{plantedByPhrase}が蒔いた種が育ち、{othersPhrase}
-                と収穫しました。
-              </p>
-              <form
-                action={claimGardenHarvestAction.bind(null, seed.id)}
-                className="mt-3"
-              >
-                <button
-                  type="submit"
-                  className="rounded-full bg-village-ember px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-                >
-                  受け取る
-                </button>
-              </form>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <GardenHarvestModal harvests={readyHarvests} />
 
       <VillageMap tier={tier} unlockedFacilityKeys={unlockedFacilityKeys} />
 
