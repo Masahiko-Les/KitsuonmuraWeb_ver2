@@ -19,13 +19,14 @@ export function GardenHarvestModal({
 
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) return;
-    if (harvests.length > 0 && !dialog.open) {
+    if (dialog && harvests.length > 0 && !dialog.open) {
       dialog.showModal();
-    } else if (harvests.length === 0 && dialog.open) {
-      dialog.close();
     }
   }, [harvests.length]);
+
+  if (harvests.length === 0) {
+    return null;
+  }
 
   return (
     <dialog
@@ -34,7 +35,7 @@ export function GardenHarvestModal({
     >
       <div className="flex shrink-0 items-center justify-between p-5 pb-4">
         <h2 className="font-serif text-lg text-village-ink">
-          農園からのお知らせ
+          収穫物のお知らせ
         </h2>
         <button
           type="button"
