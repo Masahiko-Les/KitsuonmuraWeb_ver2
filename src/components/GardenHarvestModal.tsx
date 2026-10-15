@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { GardenSeed } from "@/types/database";
 import { claimGardenHarvestAction } from "@/app/(village)/garden/actions";
 
@@ -16,6 +16,12 @@ export function GardenHarvestModal({
   harvests: ReadyHarvest[];
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  // Tracks the count that was active when the user last dismissed the
+  // modal, so any change (a claim, or a newly-ready harvest) naturally
+  // un-dismisses it without needing an effect to reset separate state.
+  const [dismissedAtCount, setDismissedAtCount] = useState<number | null>(
+    null,
+  );
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -24,7 +30,7 @@ export function GardenHarvestModal({
     }
   }, [harvests.length]);
 
-  if (harvests.length === 0) {
+  if (harvests.length === 0 || dismissedAtCount === harvests.length) {
     return null;
   }
 
@@ -39,7 +45,10 @@ export function GardenHarvestModal({
         </h2>
         <button
           type="button"
-          onClick={() => dialogRef.current?.close()}
+          onClick={() => {
+            dialogRef.current?.close();
+            setDismissedAtCount(harvests.length);
+          }}
           className="text-sm text-village-ink/50 hover:text-village-ink"
         >
           閉じる
