@@ -2,6 +2,10 @@
 // x / y / width / height are percentages (0-100) of the image's rendered
 // size, so they stay correct at any responsive scale. Adjust these numbers
 // to line up with the artwork; no code changes needed elsewhere.
+//
+// This array's order also drives the mobile facility list below the map
+// (rendered two-per-row), independent of the x/y coordinates used for the
+// map hotspots themselves.
 
 export interface MapHotspot {
   id: string;
@@ -33,6 +37,24 @@ export const mapHotspots: MapHotspot[] = [
     route: "/bonfire",
   },
   {
+    id: "my-house",
+    facility: "自分の家",
+    x: 54,
+    y: 50,
+    width: 14,
+    height: 10,
+    route: "/my-house",
+  },
+  {
+    id: "field",
+    facility: "自分の家の畑",
+    x: 74,
+    y: 54,
+    width: 24,
+    height: 19,
+    route: "/field",
+  },
+  {
     id: "garden",
     facility: "農園",
     x: 71,
@@ -40,15 +62,6 @@ export const mapHotspots: MapHotspot[] = [
     width: 23,
     height: 14,
     route: "/garden",
-  },
-  {
-    id: "shrine",
-    facility: "祠",
-    x: 22,
-    y: 7,
-    width: 15,
-    height: 10,
-    route: "/shrine",
   },
   {
     id: "desert",
@@ -69,15 +82,6 @@ export const mapHotspots: MapHotspot[] = [
     route: "/library",
   },
   {
-    id: "my-house",
-    facility: "自分の家",
-    x: 54,
-    y: 50,
-    width: 14,
-    height: 10,
-    route: "/my-house",
-  },
-  {
     id: "cinema",
     facility: "映画館",
     x: 23,
@@ -87,13 +91,13 @@ export const mapHotspots: MapHotspot[] = [
     route: "/cinema",
   },
   {
-    id: "field",
-    facility: "自分の家の畑",
-    x: 74,
-    y: 54,
-    width: 24,
-    height: 19,
-    route: "/field",
+    id: "shrine",
+    facility: "祠",
+    x: 22,
+    y: 7,
+    width: 15,
+    height: 10,
+    route: "/shrine",
   },
   {
     id: "radio-station",
