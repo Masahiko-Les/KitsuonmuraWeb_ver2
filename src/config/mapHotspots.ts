@@ -10,6 +10,7 @@
 export interface MapHotspot {
   id: string;
   facility: string;
+  iconSrc: string;
   x: number;
   y: number;
   width: number;
@@ -21,6 +22,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "town-hall",
     facility: "村役場",
+    iconSrc: "/icons/town-hall.png",
     x: 56,
     y: 24,
     width: 17,
@@ -30,6 +32,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "bonfire",
     facility: "焚き火",
+    iconSrc: "/icons/bonfire.png",
     x: 46,
     y: 38,
     width: 12,
@@ -39,6 +42,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "my-house",
     facility: "自分の家",
+    iconSrc: "/icons/my-house.png",
     x: 54,
     y: 50,
     width: 14,
@@ -48,6 +52,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "field",
     facility: "自分の家の畑",
+    iconSrc: "/icons/field.png",
     x: 74,
     y: 54,
     width: 24,
@@ -57,6 +62,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "garden",
     facility: "農園",
+    iconSrc: "/icons/garden.png",
     x: 71,
     y: 38,
     width: 23,
@@ -66,6 +72,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "desert",
     facility: "砂漠",
+    iconSrc: "/icons/desert.png",
     x: 58,
     y: 2,
     width: 40,
@@ -75,6 +82,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "library",
     facility: "図書館",
+    iconSrc: "/icons/library.png",
     x: 37,
     y: 27,
     width: 13,
@@ -84,6 +92,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "cinema",
     facility: "映画館",
+    iconSrc: "/icons/cinema.png",
     x: 23,
     y: 39,
     width: 14,
@@ -93,6 +102,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "shrine",
     facility: "祠",
+    iconSrc: "/icons/shrine.png",
     x: 22,
     y: 7,
     width: 15,
@@ -102,6 +112,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "radio-station",
     facility: "ラジオ局",
+    iconSrc: "/icons/radio-station.png",
     x: 8,
     y: 35,
     width: 11,
@@ -111,6 +122,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "dev-station",
     facility: "開発局",
+    iconSrc: "/icons/dev-station.png",
     x: 35,
     y: 51,
     width: 14,
@@ -120,6 +132,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "outside-world",
     facility: "外の世界へ",
+    iconSrc: "/icons/outside-world.png",
     x: 7,
     y: 62,
     width: 20,
@@ -129,6 +142,7 @@ export const mapHotspots: MapHotspot[] = [
   {
     id: "research-lab",
     facility: "研究所",
+    iconSrc: "/icons/research-lab.png",
     x: 11,
     y: 27,
     width: 11,

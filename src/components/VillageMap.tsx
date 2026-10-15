@@ -71,7 +71,7 @@ export function VillageMap({
   return (
     <div
       onClick={handleMapClick}
-      className="relative -mx-4 aspect-[1122/1402] w-auto overflow-hidden border-village-border shadow-xl sm:mx-auto sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border"
+      className="relative aspect-[1122/1402] w-full overflow-hidden border-village-gold shadow-[0_8px_24px_rgba(63,44,34,0.35)] sm:mx-auto sm:max-w-2xl sm:rounded-2xl sm:border"
     >
       <Image
         src={visual.image}

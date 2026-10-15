@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { VillageMap } from "@/components/VillageMap";
+import { VillageHeader } from "@/components/VillageHeader";
 import { GardenHarvestModal } from "@/components/GardenHarvestModal";
 import { mapHotspots } from "@/config/mapHotspots";
 import { getUnlockedFacilityKeys } from "@/lib/unlocks";
@@ -42,49 +44,54 @@ export default async function VillagePage() {
   const unlockedFacilityKeys = getUnlockedFacilityKeys(profile.gift_count);
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-8">
-      <div className="relative mb-6 flex items-center justify-end">
-        <div className="text-right">
-          <p className="hidden text-sm text-village-ink/60 sm:block">
-            おかえりなさい
-          </p>
-          <h1 className="font-serif text-sm text-village-ink sm:text-2xl">
-            {profile.nickname} さん
-          </h1>
-        </div>
-        <p className="absolute inset-x-0 text-center font-serif text-4xl text-village-ink">
-          吃音村
-        </p>
-      </div>
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col pb-8">
+      <VillageHeader nickname={profile.nickname} />
 
       <GardenHarvestModal harvests={readyHarvests} />
 
       <VillageMap tier={tier} unlockedFacilityKeys={unlockedFacilityKeys} />
 
-      <p className="mt-6 text-center text-sm text-village-ink/50">
-        地図の上の建物をクリックすると、それぞれの場所に移動します。
-      </p>
+      <section className="village-woodgrain px-4 pt-6 pb-8 sm:rounded-b-2xl">
+        <p className="text-center text-sm text-village-parchment/70">
+          地図の上の建物をクリックすると、それぞれの場所に移動します。
+        </p>
 
-      <ul className="mt-4 grid grid-cols-2 gap-2 sm:hidden">
-        {mapHotspots.map((spot) => {
-          const isLocked = !unlockedFacilityKeys.has(spot.id);
-          return (
-            <li key={spot.id}>
-              <Link
-                href={spot.route}
-                className={`block rounded-lg border px-3 py-2.5 text-center text-sm transition-colors ${
-                  isLocked
-                    ? "border-village-border/60 bg-village-ink/5 text-village-ink/40"
-                    : "border-village-border bg-village-paper text-village-ink hover:bg-village-ink/5"
-                }`}
-              >
-                {isLocked ? "🔒 " : ""}
-                {spot.facility}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+        <ul className="mt-4 grid grid-cols-2 gap-2 sm:hidden">
+          {mapHotspots.map((spot) => {
+            const isLocked = !unlockedFacilityKeys.has(spot.id);
+            return (
+              <li key={spot.id}>
+                <Link
+                  href={spot.route}
+                  className={`flex items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-transform active:scale-95 ${
+                    isLocked
+                      ? "border-village-gold/30 bg-village-timber text-village-parchment/40"
+                      : "border-village-gold bg-village-parchment text-village-ink shadow-sm"
+                  }`}
+                >
+                  <Image
+                    src={spot.iconSrc}
+                    alt=""
+                    width={32}
+                    height={32}
+                    className={`h-8 w-8 object-contain ${isLocked ? "opacity-40 grayscale" : ""}`}
+                  />
+                  <span className="flex-1 text-center">
+                    {isLocked ? "🔒 " : ""}
+                    {spot.facility}
+                  </span>
+                  <span
+                    aria-hidden
+                    className={isLocked ? "text-village-parchment/30" : "text-village-gold"}
+                  >
+                    ›
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
     </main>
   );
 }
