@@ -23,7 +23,7 @@ function PersonLink({ person }: { person: HarvestPerson }) {
   return (
     <Link
       href={`/residents/${person.profileId}`}
-      className="text-village-ember underline"
+      className="text-village-ember"
     >
       {person.nickname}さん
     </Link>
