@@ -34,6 +34,22 @@ interface ReadyHarvest {
   others: HarvestPerson[];
 }
 
+const ABOUT_VILLAGE_TEXT = `吃音村は、吃音者の、吃音者による、吃音者のための村です。
+
+「吃音」という共通の体験を持つ人たちが集まり、互いの苦労や思いを分かち合い、支え合うための場所です。
+この村の人々と関わる中で、「吃音を抱えているのは、自分ひとりではない」と感じてもらえたら嬉しいです。
+普通の世界では、吃音の苦労はなかなか理解されないことがあります。
+しかし、この村では、その苦労を大切なものとして受け止め、分かち合いたいと考えています。
+
+農園では、吃音にまつわる苦労を「種」としてまきます。 その種に村人たちが水をあげ、育った農作物をみんなで分かち合います。誰かの苦労が、誰かを支える糧になる。そんな場所です。
+
+村のはずれには、生きづらさを象徴する「砂漠」があります。 ここでは、吃音を抱えながらも一歩踏み出した挑戦を「種」としてまきます。村人たちは水をあげてその挑戦を応援し、やがて咲いた花をみんなで分かち合います。
+村人の挑戦は他の村人たちの新たな勇気にもなると思います。
+
+苦労も、挑戦も、ひとりで抱え込まなくていい。
+お互いの弱さを知り、その弱さを価値として分かち合える。
+みんなで吃音村を、そんな場所に育てていきたいと思っています。`;
+
 export default async function VillagePage() {
   const { supabase, user, profile } = await requireProfile();
 
@@ -96,6 +112,23 @@ export default async function VillagePage() {
             );
           })}
         </ul>
+
+        <div className="mt-6 rounded-xl border border-village-gold/40 bg-village-timber/60 p-5">
+          <h2 className="mb-3 text-center font-serif text-lg text-village-parchment">
+            吃音村とは
+          </h2>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-village-parchment/80">
+            {ABOUT_VILLAGE_TEXT}
+          </p>
+          <div className="mt-4 text-center">
+            <Link
+              href="/about"
+              className="inline-block rounded-full border border-village-gold px-5 py-2 text-sm font-medium text-village-gold transition-colors hover:bg-village-gold/10"
+            >
+              さらに読む
+            </Link>
+          </div>
+        </div>
       </section>
     </main>
   );
