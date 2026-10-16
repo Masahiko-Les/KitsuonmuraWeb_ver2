@@ -96,6 +96,29 @@ create policy "user_flowers_select_own"
   to authenticated
   using (user_id = auth.uid());
 
+-- Permanent record of "this person was credited for this bloom", mirroring
+-- garden_harvest_claims for the exact same reason: user_flowers rows move
+-- to a new owner when gifted away (gift_flower() updates user_id in place),
+-- so it alone can't answer "was I ever part of this bloom" once gifted —
+-- needed for an accurate, un-erasable per-user diary/history.
+create table public.desert_bloom_claims (
+  bloom_id uuid not null references public.desert_blooms(id) on delete cascade,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  claimed_at timestamptz not null default now(),
+  primary key (bloom_id, user_id)
+);
+
+alter table public.desert_bloom_claims enable row level security;
+
+grant select on public.desert_bloom_claims to authenticated;
+
+create policy "desert_bloom_claims_select_own"
+  on public.desert_bloom_claims for select
+  to authenticated
+  using (user_id = auth.uid());
+
+-- No insert policy: only water_desert_story() may create these rows.
+
 -- Mirrors water_seed(): the row lock on desert_stories serializes concurrent
 -- waterings of the same story so a bloom can never double-fire. Reuses
 -- game_settings.harvest_water_count so the two facilities stay in sync
@@ -163,6 +186,15 @@ begin
         select user_id from public.desert_waterings where story_id = p_story_id
       ) recipients
     on conflict (user_id, bloom_id) do nothing;
+
+    insert into public.desert_bloom_claims (user_id, bloom_id)
+    select distinct recipient, v_bloom_id
+      from (
+        select v_story.user_id as recipient
+        union
+        select user_id from public.desert_waterings where story_id = p_story_id
+      ) recipients
+    on conflict (bloom_id, user_id) do nothing;
 
     return json_build_object(
       'status', 'bloomed',

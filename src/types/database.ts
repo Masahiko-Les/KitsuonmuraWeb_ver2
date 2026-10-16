@@ -175,6 +175,12 @@ export interface UserFlower {
   created_at: string;
 }
 
+export interface DesertBloomClaim {
+  bloom_id: string;
+  user_id: string;
+  claimed_at: string;
+}
+
 export interface BookCatalogItem {
   id: string;
   title: string;

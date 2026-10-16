@@ -186,6 +186,21 @@ export default async function MyHousePage() {
           </Link>
         </div>
       </section>
+
+      <section className="mt-8 flex flex-col gap-4">
+        <h2 className="text-sm font-medium text-village-ink/80">日記</h2>
+        <p className="text-sm text-village-ink/60">
+          もらったものや収穫したものが、日時とともに自動で記録されます。
+        </p>
+        <div>
+          <Link
+            href="/diary"
+            className="rounded-full border border-village-border bg-village-paper px-5 py-2 text-sm font-medium text-village-ink transition-colors hover:bg-village-ink/5"
+          >
+            日記を見る
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
