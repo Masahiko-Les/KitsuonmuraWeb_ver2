@@ -1,13 +1,33 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import type { GardenSeed } from "@/types/database";
 import { claimGardenHarvestAction } from "@/app/(village)/garden/actions";
 
+interface HarvestPerson {
+  nickname: string;
+  profileId: string;
+}
+
 interface ReadyHarvest {
   seed: GardenSeed;
-  plantedByPhrase: string;
-  othersPhrase: string;
+  plantedBy: HarvestPerson | null;
+  others: HarvestPerson[];
+}
+
+function PersonLink({ person }: { person: HarvestPerson }) {
+  if (!person.profileId) {
+    return <>{person.nickname}さん</>;
+  }
+  return (
+    <Link
+      href={`/residents/${person.profileId}`}
+      className="text-village-ember underline"
+    >
+      {person.nickname}さん
+    </Link>
+  );
 }
 
 export function GardenHarvestModal({
@@ -56,14 +76,22 @@ export function GardenHarvestModal({
       </div>
 
       <ul className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-5 pt-0">
-        {harvests.map(({ seed, plantedByPhrase, othersPhrase }) => (
+        {harvests.map(({ seed, plantedBy, others }) => (
           <li
             key={seed.id}
             data-seed-id={seed.id}
             className="rounded-xl border border-village-border bg-white p-4"
           >
             <p className="text-sm leading-relaxed text-village-ink/90">
-              農園で{plantedByPhrase}が蒔いた種が育ち、{othersPhrase}
+              農園で
+              {plantedBy ? <PersonLink person={plantedBy} /> : "自分"}
+              が蒔いた種が育ち、
+              {others.map((person, index) => (
+                <span key={person.profileId || person.nickname}>
+                  {index > 0 ? "・" : ""}
+                  <PersonLink person={person} />
+                </span>
+              ))}
               と収穫しました。
             </p>
             <form

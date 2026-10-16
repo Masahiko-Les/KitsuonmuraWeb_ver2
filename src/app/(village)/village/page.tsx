@@ -23,10 +23,15 @@ interface Harvest {
   seed_id: string;
 }
 
+interface HarvestPerson {
+  nickname: string;
+  profileId: string;
+}
+
 interface ReadyHarvest {
   seed: GardenSeed;
-  plantedByPhrase: string;
-  othersPhrase: string;
+  plantedBy: HarvestPerson | null;
+  others: HarvestPerson[];
 }
 
 export default async function VillagePage() {
@@ -186,17 +191,22 @@ async function getReadyGardenHarvests(
   );
 
   return unclaimedSeeds.map((seed) => {
-    const plantedByPhrase =
+    const plantedBy: HarvestPerson | null =
       seed.user_id === userId
-        ? "自分"
-        : `${profileByUserId.get(seed.user_id)?.nickname ?? "名もなき村人"}さん`;
+        ? null
+        : {
+            nickname: profileByUserId.get(seed.user_id)?.nickname ?? "名もなき村人",
+            profileId: profileByUserId.get(seed.user_id)?.id ?? "",
+          };
 
     const waterers = waterersBySeedId.get(seed.id) ?? [];
-    const othersPhrase = waterers
+    const others: HarvestPerson[] = waterers
       .filter((id) => id !== userId)
-      .map((id) => `${profileByUserId.get(id)?.nickname ?? "名もなき村人"}さん`)
-      .join("・");
+      .map((id) => ({
+        nickname: profileByUserId.get(id)?.nickname ?? "名もなき村人",
+        profileId: profileByUserId.get(id)?.id ?? "",
+      }));
 
-    return { seed, plantedByPhrase, othersPhrase };
+    return { seed, plantedBy, others };
   });
 }
