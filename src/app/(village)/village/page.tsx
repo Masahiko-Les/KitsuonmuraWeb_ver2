@@ -56,7 +56,7 @@ export default async function VillagePage() {
           地図の上の建物をクリックすると、それぞれの場所に移動します。
         </p>
 
-        <ul className="mt-4 grid grid-cols-2 gap-2 sm:hidden">
+        <ul className="mt-4 grid grid-cols-2 gap-2">
           {mapHotspots.map((spot) => {
             const isLocked = !unlockedFacilityKeys.has(spot.id);
             return (
