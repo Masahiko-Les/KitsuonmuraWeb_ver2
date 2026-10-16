@@ -25,7 +25,6 @@ export function BonfireForm() {
         rows={3}
         required
         maxLength={2000}
-        placeholder="今日感じたこと、思ったことを、少しだけ書いてみませんか。"
         className="rounded-lg border border-village-border bg-white px-4 py-3 text-village-ink outline-none focus:border-village-ember"
       />
       {state.error ? <p className="text-sm text-red-700">{state.error}</p> : null}
