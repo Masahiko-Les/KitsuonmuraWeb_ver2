@@ -1,4 +1,4 @@
-import type { Profile } from "@/types/database";
+import { DIFFICULT_SOUND_ROWS, type Profile } from "@/types/database";
 
 function LabeledText({ label, text }: { label: string; text: string }) {
   return (
@@ -33,14 +33,22 @@ export function ProfileCard({ profile }: { profile: Profile }) {
       {profile.difficult_sounds.length > 0 ? (
         <div className="mt-4">
           <p className="mb-1 text-xs text-village-ink/50">言いにくい音</p>
-          <div className="flex flex-wrap gap-1">
-            {profile.difficult_sounds.map((kana) => (
-              <span
-                key={kana}
-                className="flex h-7 w-7 items-center justify-center rounded-md border border-village-border bg-white text-sm text-village-ink"
-              >
-                {kana}
-              </span>
+          <div className="flex flex-col gap-1.5 rounded-lg border border-village-border bg-white p-4">
+            {DIFFICULT_SOUND_ROWS.map((row) => (
+              <div key={row.join("")} className="flex gap-1.5">
+                {row.map((kana) => (
+                  <span
+                    key={kana}
+                    className={`flex h-9 w-9 items-center justify-center rounded-md border text-sm ${
+                      profile.difficult_sounds.includes(kana)
+                        ? "border-village-ember bg-village-ember/10 text-village-ember"
+                        : "border-village-border text-village-ink/30"
+                    }`}
+                  >
+                    {kana}
+                  </span>
+                ))}
+              </div>
             ))}
           </div>
         </div>
