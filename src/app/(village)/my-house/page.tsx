@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
@@ -83,93 +84,125 @@ export default async function MyHousePage() {
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
       <FacilityHeader title="自分の家" />
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-sm font-medium text-village-ink/80">
-          所持している収穫物
-        </h2>
-        <ul className="flex flex-col gap-3">
-          {groupedCrops.map((crop) => (
-            <li
-              key={crop.key}
-              className="flex items-center justify-between rounded-xl border border-village-border bg-white px-4 py-3"
-            >
-              <span className="text-sm text-village-ink">
-                {crop.emoji ?? "🌾"} {crop.name}
-              </span>
-              <span className="text-sm font-medium text-village-ink/70">
-                x {crop.count}
-              </span>
-            </li>
-          ))}
-        </ul>
-        {groupedCrops.length === 0 ? (
+      <section className="rounded-2xl border border-village-gold/70 bg-village-parchment p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="text-xl">🧺</span>
+          <h2 className="font-serif text-lg text-village-ink">
+            所持している収穫物
+          </h2>
+        </div>
+        {groupedCrops.length > 0 ? (
+          <div className="grid grid-cols-3 gap-3">
+            {groupedCrops.map((crop) => (
+              <div
+                key={crop.key}
+                className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-3 text-center shadow-sm"
+              >
+                <span className="text-2xl">{crop.emoji ?? "🌾"}</span>
+                <span className="text-xs font-medium text-village-ink">
+                  {crop.name}
+                </span>
+                <span className="text-[11px] text-village-ink/50">
+                  ×{crop.count}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
           <p className="text-center text-sm text-village-ink/50">
             まだ収穫物を持っていません。農園で作物を育てましょう。
           </p>
-        ) : null}
+        )}
       </section>
 
-      <section className="mt-8 flex flex-col gap-4">
-        <h2 className="text-sm font-medium text-village-ink/80">
-          咲かせた花
-        </h2>
-        <ul className="flex flex-col gap-3">
-          {groupedFlowers.map((flower) => (
-            <li
-              key={flower.key}
-              className="flex items-center justify-between rounded-xl border border-village-border bg-white px-4 py-3"
-            >
-              <span className="text-sm text-village-ink">
-                {flower.emoji ?? "🌸"} {flower.name}
-              </span>
-              <span className="text-sm font-medium text-village-ink/70">
-                x {flower.count}
-              </span>
-            </li>
-          ))}
-        </ul>
-        {groupedFlowers.length === 0 ? (
-          <p className="text-center text-sm text-village-ink/50">
-            まだ花を咲かせていません。砂漠の開拓で記録に水をあげましょう。
-          </p>
-        ) : null}
+      <section className="mt-8 rounded-2xl border border-village-gold/70 bg-village-parchment p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="text-xl">🌷</span>
+          <h2 className="font-serif text-lg text-village-ink">所持している花</h2>
+        </div>
+        {groupedFlowers.length > 0 ? (
+          <div className="grid grid-cols-3 gap-3">
+            {groupedFlowers.map((flower) => (
+              <div
+                key={flower.key}
+                className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-3 text-center shadow-sm"
+              >
+                <span className="text-2xl">{flower.emoji ?? "🌸"}</span>
+                <span className="text-xs font-medium text-village-ink">
+                  {flower.name}
+                </span>
+                <span className="text-[11px] text-village-ink/50">
+                  ×{flower.count}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-2 py-2 text-center">
+            <span className="text-4xl">🌼</span>
+            <p className="text-sm text-village-ink/50">
+              まだ花を咲かせていません。
+              <br />
+              砂漠で種を蒔いて、水をあげましょう。
+            </p>
+          </div>
+        )}
       </section>
 
-      <section className="mt-8 flex flex-col gap-4">
-        <h2 className="text-sm font-medium text-village-ink/80">
-          村長からもらったバッジ
-        </h2>
-        <p className="text-center text-sm text-village-ink/60">
+      <section className="mt-8 rounded-2xl border border-village-gold/70 bg-village-parchment p-6 shadow-sm">
+        <div className="mb-1 flex items-center gap-2">
+          <span className="text-xl">👑</span>
+          <h2 className="font-serif text-lg text-village-ink">
+            村長からもらったバッジ
+          </h2>
+        </div>
+        <p className="mb-4 text-xs text-village-ink/60">
           これまでに収穫物を{profile.gift_count}回、村人にあげました。
         </p>
-        <ul className="flex flex-col gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {BADGES.map((badge) => {
             const earned = profile.gift_count >= badge.requiredGifts;
             return (
-              <li
+              <div
                 key={badge.badgeNumber}
-                className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
+                className={`flex items-center gap-3 rounded-xl border px-3 py-3 shadow-sm ${
                   earned
-                    ? "border-village-border bg-white"
+                    ? "border-village-gold bg-white"
                     : "border-village-border/60 bg-village-ink/5"
                 }`}
               >
-                <span
-                  className={`text-sm ${
-                    earned ? "text-village-ink" : "text-village-ink/40"
+                <Image
+                  src={`/icons/${badge.facilityKey}.png`}
+                  alt=""
+                  width={48}
+                  height={48}
+                  className={`h-12 w-12 shrink-0 object-contain ${
+                    earned ? "" : "opacity-40 grayscale"
                   }`}
-                >
-                  {earned ? "🏅" : "🔒"} {badge.facilityLabel}
-                </span>
-                <span className="text-xs text-village-ink/50">
-                  {earned
-                    ? `${badge.requiredGifts}回達成`
-                    : `あと${badge.requiredGifts - profile.gift_count}回`}
-                </span>
-              </li>
+                />
+                <div className="min-w-0 flex-1">
+                  <p
+                    className={`text-sm leading-snug ${
+                      earned ? "text-village-ink" : "text-village-ink/40"
+                    }`}
+                  >
+                    {earned ? "" : "🔒 "}
+                    {badge.facilityLabel}
+                  </p>
+                  <p
+                    className={`text-xs ${
+                      earned ? "text-village-ink/50" : "text-village-ink/30"
+                    }`}
+                  >
+                    {earned
+                      ? `${badge.requiredGifts}回達成`
+                      : `あと${badge.requiredGifts - profile.gift_count}回`}
+                  </p>
+                </div>
+              </div>
             );
           })}
-        </ul>
+        </div>
       </section>
 
       <section className="mt-8 flex flex-col gap-4">
