@@ -49,15 +49,20 @@ export function VillageMap({
   // until you happen to land on one. The first tap anywhere on the map —
   // including empty areas with no hotspot — just reveals every label
   // instead of navigating; a second tap on a hotspot then follows it as
-  // normal. Needs both handlers below: the wrapper one covers taps that
-  // land outside any hotspot, but a hotspot tap also needs its own
-  // handler because relying solely on the delegated wrapper handler's
-  // preventDefault() wasn't reliably stopping that same tap's default
-  // navigation on real iOS Safari.
+  // normal. Tapping an empty area again while labels are already shown
+  // hides them, so the reveal is a toggle rather than one-way. Needs both
+  // handlers below: the wrapper one covers taps that land outside any
+  // hotspot, but a hotspot tap also needs its own handler because relying
+  // solely on the delegated wrapper handler's preventDefault() wasn't
+  // reliably stopping that same tap's default navigation on real iOS
+  // Safari.
   function handleMapClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (isTouchDevice && !labelsRevealed) {
+    if (!isTouchDevice) return;
+    if (!labelsRevealed) {
       event.preventDefault();
       setLabelsRevealed(true);
+    } else {
+      setLabelsRevealed(false);
     }
   }
 
