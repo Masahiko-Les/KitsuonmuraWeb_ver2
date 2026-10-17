@@ -81,22 +81,22 @@ export default async function MyHousePage() {
   const groupedFlowers = Array.from(groupedFlowersMap.values());
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
+    <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
       <FacilityHeader title="自分の家" />
 
-      <section className="rounded-2xl border border-village-gold/70 bg-village-parchment p-6 shadow-sm">
-        <div className="mb-4 flex items-center gap-2">
+      <section className="rounded-2xl border border-village-gold/70 bg-village-parchment p-4 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
           <span className="text-xl">🧺</span>
           <h2 className="font-serif text-lg text-village-ink">
             所持している収穫物
           </h2>
         </div>
         {groupedCrops.length > 0 ? (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             {groupedCrops.map((crop) => (
               <div
                 key={crop.key}
-                className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-3 text-center shadow-sm"
+                className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-2.5 text-center shadow-sm"
               >
                 {CROP_ICON_SRC[crop.name] ? (
                   <Image
@@ -125,17 +125,17 @@ export default async function MyHousePage() {
         )}
       </section>
 
-      <section className="mt-8 rounded-2xl border border-village-gold/70 bg-village-parchment p-6 shadow-sm">
-        <div className="mb-4 flex items-center gap-2">
+      <section className="mt-5 rounded-2xl border border-village-gold/70 bg-village-parchment p-4 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
           <span className="text-xl">🌷</span>
           <h2 className="font-serif text-lg text-village-ink">所持している花</h2>
         </div>
         {groupedFlowers.length > 0 ? (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2">
             {groupedFlowers.map((flower) => (
               <div
                 key={flower.key}
-                className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-3 text-center shadow-sm"
+                className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-2.5 text-center shadow-sm"
               >
                 <span className="text-2xl">{flower.emoji ?? "🌸"}</span>
                 <span className="text-xs font-medium text-village-ink">
@@ -148,7 +148,7 @@ export default async function MyHousePage() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-2 py-2 text-center">
+          <div className="flex flex-col items-center gap-1.5 py-1 text-center">
             <span className="text-4xl">🌼</span>
             <p className="text-sm text-village-ink/50">
               まだ花を咲かせていません。
@@ -159,23 +159,23 @@ export default async function MyHousePage() {
         )}
       </section>
 
-      <section className="mt-8 rounded-2xl border border-village-gold/70 bg-village-parchment p-6 shadow-sm">
+      <section className="mt-5 rounded-2xl border border-village-gold/70 bg-village-parchment p-4 shadow-sm">
         <div className="mb-1 flex items-center gap-2">
           <span className="text-xl">👑</span>
           <h2 className="font-serif text-lg text-village-ink">
             村長からもらったバッジ
           </h2>
         </div>
-        <p className="mb-4 text-xs text-village-ink/60">
+        <p className="mb-3 text-xs text-village-ink/60">
           これまでに収穫物を{profile.gift_count}回、村人にあげました。
         </p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           {BADGES.map((badge) => {
             const earned = profile.gift_count >= badge.requiredGifts;
             return (
               <div
                 key={badge.badgeNumber}
-                className={`flex items-center gap-3 rounded-xl border px-3 py-3 shadow-sm ${
+                className={`flex items-center gap-2.5 rounded-xl border px-2.5 py-2.5 shadow-sm ${
                   earned
                     ? "border-village-gold bg-white"
                     : "border-village-border/60 bg-village-ink/5"
@@ -184,9 +184,9 @@ export default async function MyHousePage() {
                 <Image
                   src={`/icons/${badge.facilityKey}.png`}
                   alt=""
-                  width={48}
-                  height={48}
-                  className={`h-12 w-12 shrink-0 object-contain ${
+                  width={40}
+                  height={40}
+                  className={`h-10 w-10 shrink-0 object-contain ${
                     earned ? "" : "opacity-40 grayscale"
                   }`}
                 />
@@ -215,7 +215,7 @@ export default async function MyHousePage() {
         </div>
       </section>
 
-      <section className="mt-8 flex flex-col gap-4">
+      <section className="mt-5 flex flex-col gap-2">
         <h2 className="text-sm font-medium text-village-ink/80">住民票</h2>
         <div>
           <Link
@@ -227,10 +227,10 @@ export default async function MyHousePage() {
         </div>
       </section>
 
-      <section className="mt-8 flex flex-col gap-4">
+      <section className="mt-5 flex flex-col gap-2">
         <h2 className="text-sm font-medium text-village-ink/80">日記</h2>
         <p className="text-sm text-village-ink/60">
-          もらったものや収穫したものが、日時とともに自動で記録されます。
+          この村でのあなたの活動やもらったものが記録されます。
         </p>
         <div>
           <Link

@@ -271,7 +271,7 @@ export default async function DiaryPage() {
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
       <FacilityHeader
         title="日記"
-        description="もらったものや収穫したものが、日時とともに自動で記録されます。"
+        description="この村でのあなたの活動やもらったものが記録されます。"
       />
 
       {entries.length > 0 ? (
