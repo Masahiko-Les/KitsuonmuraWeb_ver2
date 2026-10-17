@@ -96,7 +96,7 @@ export const mapHotspots: MapHotspot[] = [
     x: 23,
     y: 39,
     width: 14,
-    height: 10,
+    height: 15,
     route: "/cinema",
   },
   {
