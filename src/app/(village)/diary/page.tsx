@@ -1,5 +1,6 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { CropIcon } from "@/components/CropIcon";
 import type { Profile } from "@/types/database";
 
 interface CatalogRef {
@@ -49,7 +50,9 @@ interface DesertClaimRow {
 
 interface DiaryEntry {
   date: string;
-  text: string;
+  itemName: string;
+  itemEmoji: string | null;
+  suffix: string;
 }
 
 function formatDate(iso: string): string {
@@ -196,9 +199,9 @@ export default async function DiaryPage() {
     const catalog = gift.harvests?.crop_catalog;
     entries.push({
       date: gift.created_at,
-      text: `${catalog?.emoji ?? "🌾"} ${catalog?.name ?? "作物"}を${
-        nicknameById.get(gift.giver_id) ?? "名もなき村人"
-      }さんからもらいました。`,
+      itemName: catalog?.name ?? "作物",
+      itemEmoji: catalog?.emoji ?? "🌾",
+      suffix: `を${nicknameById.get(gift.giver_id) ?? "名もなき村人"}さんからもらいました。`,
     });
   }
 
@@ -206,9 +209,9 @@ export default async function DiaryPage() {
     const catalog = gift.desert_blooms?.flower_catalog;
     entries.push({
       date: gift.created_at,
-      text: `${catalog?.emoji ?? "🌸"} ${catalog?.name ?? "花"}を${
-        nicknameById.get(gift.giver_id) ?? "名もなき村人"
-      }さんからもらいました。`,
+      itemName: catalog?.name ?? "花",
+      itemEmoji: catalog?.emoji ?? "🌸",
+      suffix: `を${nicknameById.get(gift.giver_id) ?? "名もなき村人"}さんからもらいました。`,
     });
   }
 
@@ -216,7 +219,9 @@ export default async function DiaryPage() {
     const catalog = harvest.crop_catalog;
     entries.push({
       date: harvest.created_at,
-      text: `${catalog?.emoji ?? "🌾"} ${catalog?.name ?? "作物"}を自分の畑で収穫しました。`,
+      itemName: catalog?.name ?? "作物",
+      itemEmoji: catalog?.emoji ?? "🌾",
+      suffix: "を自分の畑で収穫しました。",
     });
   }
 
@@ -232,9 +237,11 @@ export default async function DiaryPage() {
     );
     entries.push({
       date: claim.claimed_at,
-      text: others
-        ? `${catalog?.emoji ?? "🌾"} ${catalog?.name ?? "作物"}を農園で${others}と収穫しました。`
-        : `${catalog?.emoji ?? "🌾"} ${catalog?.name ?? "作物"}を農園で収穫しました。`,
+      itemName: catalog?.name ?? "作物",
+      itemEmoji: catalog?.emoji ?? "🌾",
+      suffix: others
+        ? `を農園で${others}と収穫しました。`
+        : "を農園で収穫しました。",
     });
   }
 
@@ -250,9 +257,11 @@ export default async function DiaryPage() {
     );
     entries.push({
       date: claim.claimed_at,
-      text: others
-        ? `${catalog?.emoji ?? "🌸"} ${catalog?.name ?? "花"}を砂漠の開拓で${others}と収穫しました。`
-        : `${catalog?.emoji ?? "🌸"} ${catalog?.name ?? "花"}を砂漠の開拓で収穫しました。`,
+      itemName: catalog?.name ?? "花",
+      itemEmoji: catalog?.emoji ?? "🌸",
+      suffix: others
+        ? `を砂漠の開拓で${others}と収穫しました。`
+        : "を砂漠の開拓で収穫しました。",
     });
   }
 
@@ -275,8 +284,17 @@ export default async function DiaryPage() {
               <p className="mb-1 text-xs text-village-ink/50">
                 {formatDate(entry.date)}
               </p>
-              <p className="text-sm leading-relaxed text-village-ink/90">
-                {entry.text}
+              <p className="flex items-start gap-1.5 text-sm leading-relaxed text-village-ink/90">
+                <CropIcon
+                  name={entry.itemName}
+                  emoji={entry.itemEmoji}
+                  size={18}
+                  className="mt-0.5"
+                />
+                <span>
+                  {entry.itemName}
+                  {entry.suffix}
+                </span>
               </p>
             </li>
           ))}

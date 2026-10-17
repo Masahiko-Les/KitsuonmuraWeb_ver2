@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import { LockedFacility } from "@/components/LockedFacility";
+import { CropIcon } from "@/components/CropIcon";
 import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import { offerCropAction } from "./actions";
 
@@ -63,8 +64,12 @@ export default async function ShrinePage() {
               key={crop.id}
               className="flex items-center justify-between rounded-xl border border-village-border bg-white px-4 py-3"
             >
-              <span className="text-sm text-village-ink">
-                {crop.harvests?.crop_catalog?.emoji ?? "🌾"}{" "}
+              <span className="flex items-center gap-1.5 text-sm text-village-ink">
+                <CropIcon
+                  name={crop.harvests?.crop_catalog?.name ?? ""}
+                  emoji={crop.harvests?.crop_catalog?.emoji}
+                  size={20}
+                />
                 {crop.harvests?.crop_catalog?.name ?? "作物"}
               </span>
               <form action={offerCropAction.bind(null, crop.id)}>

@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
-import { ProfileCard } from "@/components/ProfileCard";
 import { BADGES } from "@/lib/unlocks";
+import { CROP_ICON_SRC } from "@/config/cropIcons";
 
 interface OwnedCrop {
   id: string;
@@ -98,7 +98,17 @@ export default async function MyHousePage() {
                 key={crop.key}
                 className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-3 text-center shadow-sm"
               >
-                <span className="text-2xl">{crop.emoji ?? "🌾"}</span>
+                {CROP_ICON_SRC[crop.name] ? (
+                  <Image
+                    src={CROP_ICON_SRC[crop.name]}
+                    alt=""
+                    width={36}
+                    height={36}
+                    className="h-9 w-9 object-contain"
+                  />
+                ) : (
+                  <span className="text-2xl">{crop.emoji ?? "🌾"}</span>
+                )}
                 <span className="text-xs font-medium text-village-ink">
                   {crop.name}
                 </span>
@@ -206,16 +216,13 @@ export default async function MyHousePage() {
       </section>
 
       <section className="mt-8 flex flex-col gap-4">
-        <h2 className="text-sm font-medium text-village-ink/80">
-          自分の住民票
-        </h2>
-        <ProfileCard profile={profile} />
+        <h2 className="text-sm font-medium text-village-ink/80">住民票</h2>
         <div>
           <Link
-            href="/town-hall/edit"
+            href="/town-hall"
             className="rounded-full bg-village-ember px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
-            住民票を編集する
+            住民票を見る
           </Link>
         </div>
       </section>

@@ -1,5 +1,6 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { CropIcon } from "@/components/CropIcon";
 import type { BonfirePost, Profile } from "@/types/database";
 import { BonfireForm } from "./BonfireForm";
 import { deleteBonfirePostAction, giftCropAction } from "./actions";
@@ -134,9 +135,10 @@ export default async function BonfirePage() {
                   {gifts.map((gift) => (
                     <span
                       key={gift.key}
-                      className="rounded-full bg-village-leaf/10 px-3 py-1 text-xs text-village-leaf"
+                      className="flex items-center gap-1 rounded-full bg-village-leaf/10 px-3 py-1 text-xs text-village-leaf"
                     >
-                      {gift.emoji} {gift.name}
+                      <CropIcon name={gift.name} emoji={gift.emoji} size={16} />
+                      {gift.name}
                       {gift.count > 1 ? ` x${gift.count}` : ""}
                     </span>
                   ))}
@@ -166,8 +168,9 @@ export default async function BonfirePage() {
                         key={crop.key}
                         className="flex items-center justify-between rounded-lg border border-village-border bg-white px-3 py-2"
                       >
-                        <span className="text-sm text-village-ink">
-                          {crop.emoji} {crop.name} x{crop.count}
+                        <span className="flex items-center gap-1.5 text-sm text-village-ink">
+                          <CropIcon name={crop.name} emoji={crop.emoji} size={20} />
+                          {crop.name} x{crop.count}
                         </span>
                         <form
                           action={giftCropAction.bind(

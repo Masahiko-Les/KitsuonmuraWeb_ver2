@@ -1,5 +1,6 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { CropIcon } from "@/components/CropIcon";
 import type { GardenSeed, Profile, SeedStatus } from "@/types/database";
 import { SEED_STATUS_LABEL } from "@/types/database";
 import { PlantSeedForm } from "./PlantSeedForm";
@@ -95,8 +96,9 @@ export default async function GardenPage() {
               </p>
 
               {seed.status === "harvested" && crop ? (
-                <p className="mt-3 text-sm text-village-ink/70">
-                  {crop.emoji ?? "🌾"} {crop.name} が実りました
+                <p className="mt-3 flex items-center gap-1.5 text-sm text-village-ink/70">
+                  <CropIcon name={crop.name} emoji={crop.emoji} size={20} />
+                  {crop.name} が実りました
                 </p>
               ) : null}
 

@@ -1,6 +1,7 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import { LockedFacility } from "@/components/LockedFacility";
+import { CropIcon } from "@/components/CropIcon";
 import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import type { Profile } from "@/types/database";
 
@@ -54,8 +55,9 @@ export default async function ShrineBackPage() {
               <span className="text-village-ink">
                 {author?.nickname ?? "名もなき村人"}さん
               </span>
-              <span className="text-village-ink/70">
-                {offering.crop_emoji ?? "🌾"} {offering.crop_name}
+              <span className="flex items-center gap-1.5 text-village-ink/70">
+                <CropIcon name={offering.crop_name} emoji={offering.crop_emoji} size={18} />
+                {offering.crop_name}
               </span>
               <time className="text-xs text-village-ink/40">
                 {new Date(offering.created_at).toLocaleDateString("ja-JP")}

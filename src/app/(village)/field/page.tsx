@@ -1,5 +1,6 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { CropIcon } from "@/components/CropIcon";
 import type { GardenSeed, SeedStatus } from "@/types/database";
 import { SEED_STATUS_LABEL } from "@/types/database";
 import { PlantFieldSeedForm } from "./PlantFieldSeedForm";
@@ -80,11 +81,17 @@ export default async function FieldPage() {
               </p>
 
               {crops.length > 0 ? (
-                <p className="mt-3 text-sm text-village-ink/70">
-                  {crops
-                    .map((crop) => `${crop.emoji ?? "🌾"} ${crop.name}`)
-                    .join("・")}{" "}
-                  が実りました
+                <p className="mt-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-village-ink/70">
+                  {crops.map((crop, index) => (
+                    <span key={index} className="inline-flex items-center gap-1">
+                      {index > 0 ? (
+                        <span className="text-village-ink/40">・</span>
+                      ) : null}
+                      <CropIcon name={crop.name} emoji={crop.emoji} size={18} />
+                      {crop.name}
+                    </span>
+                  ))}
+                  <span>が実りました</span>
                 </p>
               ) : null}
 
