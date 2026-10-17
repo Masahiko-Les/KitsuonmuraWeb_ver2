@@ -3,6 +3,7 @@ import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import { LockedFacility } from "@/components/LockedFacility";
 import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
+import { FlowerIcon } from "@/components/FlowerIcon";
 import type { DesertStory, Profile, StoryStatus } from "@/types/database";
 import { STORY_STATUS_LABEL } from "@/types/database";
 import { DesertStoryForm } from "./DesertStoryForm";
@@ -126,8 +127,9 @@ export default async function DesertPage() {
               </dl>
 
               {story.status === "bloomed" && flower ? (
-                <p className="mt-3 text-sm text-village-ink/70">
-                  {flower.emoji ?? "🌸"} {flower.name} が咲きました
+                <p className="mt-3 flex items-center gap-1.5 text-sm text-village-ink/70">
+                  <FlowerIcon name={flower.name} emoji={flower.emoji} size={20} />
+                  {flower.name} が咲きました
                 </p>
               ) : null}
 

@@ -4,6 +4,7 @@ import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import { BADGES } from "@/lib/unlocks";
 import { CROP_ICON_SRC } from "@/config/cropIcons";
+import { FLOWER_ICON_SRC } from "@/config/flowerIcons";
 
 interface OwnedCrop {
   id: string;
@@ -137,7 +138,17 @@ export default async function MyHousePage() {
                 key={flower.key}
                 className="flex flex-col items-center gap-1 rounded-xl border border-village-border bg-white px-2 py-2.5 text-center shadow-sm"
               >
-                <span className="text-2xl">{flower.emoji ?? "🌸"}</span>
+                {FLOWER_ICON_SRC[flower.name] ? (
+                  <Image
+                    src={FLOWER_ICON_SRC[flower.name]}
+                    alt=""
+                    width={36}
+                    height={36}
+                    className="h-9 w-9 object-contain"
+                  />
+                ) : (
+                  <span className="text-2xl">{flower.emoji ?? "🌸"}</span>
+                )}
                 <span className="text-xs font-medium text-village-ink">
                   {flower.name}
                 </span>

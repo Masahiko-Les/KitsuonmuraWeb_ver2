@@ -16,9 +16,9 @@ export function FacilityHeader({
           <Image
             src={iconSrc}
             alt=""
-            width={40}
-            height={40}
-            className="h-10 w-10 shrink-0 object-contain"
+            width={56}
+            height={56}
+            className="h-14 w-14 shrink-0 object-contain"
           />
         ) : null}
         <h1 className="font-serif text-3xl text-village-ink">{title}</h1>

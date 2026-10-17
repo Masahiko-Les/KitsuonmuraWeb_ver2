@@ -1,6 +1,7 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import { CropIcon } from "@/components/CropIcon";
+import { FlowerIcon } from "@/components/FlowerIcon";
 import type { Profile } from "@/types/database";
 
 interface CatalogRef {
@@ -50,6 +51,7 @@ interface DesertClaimRow {
 
 interface DiaryEntry {
   date: string;
+  itemKind: "crop" | "flower";
   itemName: string;
   itemEmoji: string | null;
   suffix: string;
@@ -199,6 +201,7 @@ export default async function DiaryPage() {
     const catalog = gift.harvests?.crop_catalog;
     entries.push({
       date: gift.created_at,
+      itemKind: "crop",
       itemName: catalog?.name ?? "作物",
       itemEmoji: catalog?.emoji ?? "🌾",
       suffix: `を${nicknameById.get(gift.giver_id) ?? "名もなき村人"}さんからもらいました。`,
@@ -209,6 +212,7 @@ export default async function DiaryPage() {
     const catalog = gift.desert_blooms?.flower_catalog;
     entries.push({
       date: gift.created_at,
+      itemKind: "flower",
       itemName: catalog?.name ?? "花",
       itemEmoji: catalog?.emoji ?? "🌸",
       suffix: `を${nicknameById.get(gift.giver_id) ?? "名もなき村人"}さんからもらいました。`,
@@ -219,6 +223,7 @@ export default async function DiaryPage() {
     const catalog = harvest.crop_catalog;
     entries.push({
       date: harvest.created_at,
+      itemKind: "crop",
       itemName: catalog?.name ?? "作物",
       itemEmoji: catalog?.emoji ?? "🌾",
       suffix: "を自分の畑で収穫しました。",
@@ -237,6 +242,7 @@ export default async function DiaryPage() {
     );
     entries.push({
       date: claim.claimed_at,
+      itemKind: "crop",
       itemName: catalog?.name ?? "作物",
       itemEmoji: catalog?.emoji ?? "🌾",
       suffix: others
@@ -257,6 +263,7 @@ export default async function DiaryPage() {
     );
     entries.push({
       date: claim.claimed_at,
+      itemKind: "flower",
       itemName: catalog?.name ?? "花",
       itemEmoji: catalog?.emoji ?? "🌸",
       suffix: others
@@ -285,12 +292,21 @@ export default async function DiaryPage() {
                 {formatDate(entry.date)}
               </p>
               <p className="flex items-start gap-1.5 text-sm leading-relaxed text-village-ink/90">
-                <CropIcon
-                  name={entry.itemName}
-                  emoji={entry.itemEmoji}
-                  size={18}
-                  className="mt-0.5"
-                />
+                {entry.itemKind === "flower" ? (
+                  <FlowerIcon
+                    name={entry.itemName}
+                    emoji={entry.itemEmoji}
+                    size={18}
+                    className="mt-0.5"
+                  />
+                ) : (
+                  <CropIcon
+                    name={entry.itemName}
+                    emoji={entry.itemEmoji}
+                    size={18}
+                    className="mt-0.5"
+                  />
+                )}
                 <span>
                   {entry.itemName}
                   {entry.suffix}
