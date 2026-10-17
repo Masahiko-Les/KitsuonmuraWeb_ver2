@@ -6,6 +6,7 @@ import { VillageHeader } from "@/components/VillageHeader";
 import { GardenHarvestModal } from "@/components/GardenHarvestModal";
 import { mapHotspots } from "@/config/mapHotspots";
 import { getUnlockedFacilityKeys } from "@/lib/unlocks";
+import { ABOUT_VILLAGE_TEXT } from "@/config/aboutVillage";
 import type {
   GardenHarvestClaim,
   GardenSeed,
@@ -33,22 +34,6 @@ interface ReadyHarvest {
   plantedBy: HarvestPerson | null;
   others: HarvestPerson[];
 }
-
-const ABOUT_VILLAGE_TEXT = `吃音村は、吃音者の、吃音者による、吃音者のための村です。
-
-「吃音」という共通の体験を持つ人たちが集まり、互いの苦労や思いを分かち合い、支え合うための場所です。
-この村の人々と関わる中で、「吃音を抱えているのは、自分ひとりではない」と感じてもらえたら嬉しいです。
-普通の世界では、吃音の苦労はなかなか理解されないことがあります。
-しかし、この村では、その苦労を大切なものとして受け止め、分かち合いたいと考えています。
-
-この村の農園では、吃音にまつわる苦労を「種」としてまきます。 その種に村人たちが水をあげ、育った農作物をみんなで分かち合います。誰かの苦労が、誰かを支える糧になる。そんな場所です。
-
-村のはずれには、生きづらさを象徴する「砂漠」があります。 ここでは、吃音を抱えながらも一歩踏み出した挑戦を「種」としてまきます。村人たちは水をあげてその挑戦を応援し、やがて咲いた花をみんなで分かち合います。
-村人の挑戦は他の村人たちの新たな勇気にもなると思います。
-
-苦労も、挑戦も、ひとりで抱え込まなくていい。
-お互いの弱さを知り、その弱さを価値として分かち合える。
-みんなで吃音村を、そんな場所に育てていきたいと思っています。`;
 
 export default async function VillagePage() {
   const { supabase, user, profile } = await requireProfile();

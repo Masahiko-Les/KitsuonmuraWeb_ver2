@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { VillageHeader } from "@/components/VillageHeader";
+import { ABOUT_VILLAGE_TEXT } from "@/config/aboutVillage";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -14,38 +16,38 @@ export default async function HomePage() {
   }
 
   return (
-    <main className="relative flex flex-1 items-center justify-center overflow-hidden">
-      <Image
-        src="/village-map.jpg"
-        alt=""
-        fill
-        priority
-        className="object-cover opacity-40"
-      />
-      <div className="relative z-10 mx-4 max-w-md rounded-2xl border border-village-border bg-village-paper/95 p-8 text-center shadow-xl">
-        <h1 className="font-serif text-4xl text-village-ink">吃音村β版</h1>
-        <p className="mt-4 text-sm leading-relaxed text-village-ink/80">
-          吃音を持つ人たちが暮らす、小さなオンラインの村です。
-          <br />
-          弱さや苦労を隠すのではなく、分かち合うことで、
-          <br />
-          それがこの村の豊かさになります。
-        </p>
-        <div className="mt-8 flex flex-col gap-3">
-          <Link
-            href="/login"
-            className="rounded-full bg-village-ember px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
-          >
-            ログイン
-          </Link>
-          <Link
-            href="/signup"
-            className="rounded-full border border-village-ember px-6 py-3 text-sm font-medium text-village-ember transition-colors hover:bg-village-ember/10"
-          >
-            新規登録
-          </Link>
-        </div>
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col pb-8">
+      <VillageHeader />
+
+      <div className="relative aspect-[1122/1402] w-full overflow-hidden border-village-gold shadow-[0_8px_24px_rgba(63,44,34,0.35)] sm:mx-auto sm:max-w-2xl sm:rounded-2xl sm:border">
+        <Image
+          src="/village-map.jpg"
+          alt="村の地図"
+          fill
+          priority
+          sizes="(min-width: 768px) 42rem, 100vw"
+          className="object-cover"
+        />
       </div>
+
+      <section className="village-woodgrain px-4 pt-6 pb-8 sm:rounded-b-2xl">
+        <div className="rounded-xl border border-village-gold/40 bg-village-timber/60 p-5">
+          <h1 className="mb-3 text-center font-serif text-lg text-village-parchment">
+            吃音村とは
+          </h1>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-village-parchment/80">
+            {ABOUT_VILLAGE_TEXT}
+          </p>
+          <div className="mt-6 text-center">
+            <Link
+              href="/signup"
+              className="inline-block rounded-full bg-village-ember px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            >
+              村人登録はこちら
+            </Link>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
