@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Refreshes the Supabase auth session on every request and redirects
 // unauthenticated visitors away from anything under the village.
-const PUBLIC_PATHS = ["/", "/login", "/signup", "/auth"];
+const PUBLIC_PATHS = ["/", "/login", "/signup", "/auth", "/about"];
 
 function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some(
