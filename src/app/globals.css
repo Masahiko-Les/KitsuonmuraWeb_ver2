@@ -58,3 +58,20 @@ body {
       transparent 3px
     );
 }
+
+/* Login / signup cards — a slightly warmer, more luminous parchment than
+   the header texture, with a fine grain so the card reads as aged paper
+   rather than a flat UI panel. */
+.village-auth-card {
+  background-color: var(--village-parchment);
+  background-image:
+    radial-gradient(ellipse at 50% -10%, rgba(255, 255, 255, 0.55), transparent 55%),
+    radial-gradient(ellipse at 50% 110%, rgba(139, 96, 51, 0.14), transparent 65%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(139, 96, 51, 0.03) 0px,
+      rgba(139, 96, 51, 0.03) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
