@@ -56,6 +56,9 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/village-map.jpg"],
   },
+  verification: {
+    google: "gmNxNRqbBeyjpyxiIO7it0zkkO48aAVvz4BiUGm9jYk",
+  },
 };
 
 export default function RootLayout({
