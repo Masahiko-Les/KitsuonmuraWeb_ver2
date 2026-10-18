@@ -1,10 +1,9 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { PUBLIC_PATHS } from "@/config/publicPaths";
 
 // Refreshes the Supabase auth session on every request and redirects
 // unauthenticated visitors away from anything under the village.
-const PUBLIC_PATHS = ["/", "/login", "/signup", "/auth", "/about"];
-
 function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`),
@@ -50,10 +49,13 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (!user && !isPublicPath(pathname)) {
+  const isPublic = isPublicPath(pathname);
+
+  if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     const redirectResponse = NextResponse.redirect(url);
+    redirectResponse.headers.set("X-Robots-Tag", "noindex, nofollow");
     cookiesToApply.forEach(({ name, value, options }) =>
       redirectResponse.cookies.set(name, value, options),
     );
@@ -67,6 +69,12 @@ export async function updateSession(request: NextRequest) {
   }
 
   const response = NextResponse.next({ request });
+  // Belt-and-suspenders alongside robots.ts's Disallow: a crawler that
+  // discovers a private URL via an external link still gets told not to
+  // index it, even though robots.txt alone can't guarantee that.
+  if (!isPublic) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
   cookiesToApply.forEach(({ name, value, options }) =>
     response.cookies.set(name, value, options),
   );

@@ -1,6 +1,15 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { SignupForm } from "./SignupForm";
+
+export const metadata: Metadata = {
+  title: "新規登録",
+  description:
+    "吃音村に村人登録して、吃音の苦労や工夫を分かち合うコミュニティに参加しましょう。",
+  alternates: { canonical: "/signup" },
+  openGraph: { title: "新規登録 | 吃音村" },
+};
 
 export default function SignupPage() {
   return (

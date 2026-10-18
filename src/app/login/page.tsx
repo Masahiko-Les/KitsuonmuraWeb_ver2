@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { LoginForm } from "./LoginForm";
+
+export const metadata: Metadata = {
+  title: "ログイン",
+  description: "吃音村にログインして、村での活動を続けましょう。",
+  alternates: { canonical: "/login" },
+  openGraph: { title: "ログイン | 吃音村" },
+};
 
 export default function LoginPage() {
   return (

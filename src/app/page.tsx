@@ -1,9 +1,25 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { VillageHeader } from "@/components/VillageHeader";
 import { ABOUT_VILLAGE_TEXT } from "@/config/aboutVillage";
+
+export const metadata: Metadata = {
+  description:
+    "吃音の苦労や工夫を分かち合うオンラインコミュニティ「吃音村」。農園や砂漠、図書館など村の施設を通じて、吃音者同士がゆるやかにつながります。",
+  alternates: { canonical: "/" },
+};
+
+const WEBSITE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "吃音村",
+  url: "https://www.kitsuonmura.com",
+  description: "吃音を持つ人たちが、弱さや苦労を分かち合う小さな村",
+  inLanguage: "ja",
+};
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -17,6 +33,10 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col pb-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
+      />
       <VillageHeader />
 
       <div className="relative aspect-[1122/1402] w-full overflow-hidden border-village-gold shadow-[0_8px_24px_rgba(63,44,34,0.35)] sm:mx-auto sm:max-w-2xl sm:rounded-2xl sm:border">

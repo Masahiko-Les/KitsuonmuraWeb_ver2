@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "村長の想い",
+  description:
+    "吃音村の村長ミリエルが、住民票・農園・砂漠・自分の家の畑・図書館という村の施設に込めた想いを綴ります。",
+  alternates: { canonical: "/about" },
+  openGraph: { title: "村長の想い | 吃音村" },
+};
+
 const MAYOR_INTRO = `吃音村の村長、ミリエルと申します。
 
 吃音村の村人になっていただき、ありがとうございます。

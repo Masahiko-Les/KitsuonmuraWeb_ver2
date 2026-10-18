@@ -28,9 +28,34 @@ const headingFont = localFont({
   ],
 });
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.kitsuonmura.com";
+const SITE_DESCRIPTION =
+  "吃音を持つ人たちが、弱さや苦労を分かち合う小さな村";
+
 export const metadata: Metadata = {
-  title: "吃音村",
-  description: "吃音を持つ人たちが、弱さや苦労を分かち合う小さな村",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "吃音村",
+    template: "%s | 吃音村",
+  },
+  description: SITE_DESCRIPTION,
+  keywords: ["吃音", "どもり", "吃音症", "吃音コミュニティ", "吃音村"],
+  openGraph: {
+    title: "吃音村",
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: "吃音村",
+    images: ["/village-map.jpg"],
+    locale: "ja_JP",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "吃音村",
+    description: SITE_DESCRIPTION,
+    images: ["/village-map.jpg"],
+  },
 };
 
 export default function RootLayout({
