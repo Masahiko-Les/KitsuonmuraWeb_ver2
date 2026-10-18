@@ -49,9 +49,12 @@ export default async function HomePage() {
           className="object-cover"
         />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-2 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-6 pt-24 pb-8 text-center">
-          <h2 className="font-serif text-2xl tracking-wide text-village-parchment drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] sm:text-3xl">
+          <Link
+            href="/signup"
+            className="pointer-events-auto font-serif text-2xl tracking-wide text-village-parchment drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] transition-opacity hover:opacity-80 sm:text-3xl"
+          >
             吃音村へようこそ
-          </h2>
+          </Link>
           <p className="max-w-xs text-sm leading-relaxed text-village-parchment/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]">
             この村は、吃音者の、吃音者による、吃音者のための村です。
           </p>
