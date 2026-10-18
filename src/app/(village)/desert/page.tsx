@@ -69,7 +69,9 @@ export default async function DesertPage() {
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
-        title="砂漠の開拓"
+        title="砂漠"
+        iconSrc="/icons/desert.png"
+        centered
         description="吃音の苦労に対して、どう考えて、どう行動したかを書き記し、そのチャレンジをタネとして蒔く場所です。砂漠という困難な場所で、あなたと村人たちのチャレンジと応援によって、砂漠を豊かな場所にしていきましょう。村人総出で、苦労を讃えチャレンジを応援し合いましょう。あなたの考えや行動が、村人たちの勇気になりますように。村人3人が水をあげると花が咲き、記録した人と水をあげた人たちで花を分かち合うことができます。"
       />
 

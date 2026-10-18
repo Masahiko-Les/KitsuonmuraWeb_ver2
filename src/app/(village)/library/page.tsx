@@ -29,6 +29,8 @@ export default async function LibraryPage() {
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
         title="図書館"
+        iconSrc="/icons/library.png"
+        centered
         description="吃音にまつわる本を、静かに読んでいきませんか"
       />
 

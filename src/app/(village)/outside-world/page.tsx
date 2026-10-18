@@ -15,5 +15,5 @@ export default async function OutsideWorldPage() {
     );
   }
 
-  return <ComingSoon title="外の世界へ" />;
+  return <ComingSoon title="外の世界へ" iconSrc="/icons/outside-world.png" />;
 }

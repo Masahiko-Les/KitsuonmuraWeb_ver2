@@ -40,7 +40,7 @@ export default async function ShrinePage() {
 
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
-      <FacilityHeader title="祠" />
+      <FacilityHeader title="祠" iconSrc="/icons/shrine.png" centered />
 
       <p className="whitespace-pre-line text-sm leading-relaxed text-village-ink/80">
         {

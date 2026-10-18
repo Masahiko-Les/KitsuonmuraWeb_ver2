@@ -58,6 +58,8 @@ export default async function GardenPage() {
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
         title="農園"
+        iconSrc="/icons/garden.png"
+        centered
         description="吃音の苦労を種として植えたり、他の村人の種に水をあげたりする、吃音村の農園です。村人3人が水をあげると、実を結び、種を蒔いた人と水をあげた人たちで収穫物が共有されます。収穫物は吃音村の活動に使うことができます。"
       />
 

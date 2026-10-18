@@ -15,5 +15,5 @@ export default async function RadioStationPage() {
     );
   }
 
-  return <ComingSoon title="ラジオ局" />;
+  return <ComingSoon title="ラジオ局" iconSrc="/icons/radio-station.png" />;
 }

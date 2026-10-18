@@ -83,7 +83,7 @@ export default async function MyHousePage() {
 
   return (
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-6">
-      <FacilityHeader title="自分の家" iconSrc="/icons/my-house.png" />
+      <FacilityHeader title="自分の家" iconSrc="/icons/my-house.png" centered />
 
       <section className="rounded-2xl border border-village-gold/70 bg-village-parchment p-4 shadow-sm">
         <div className="mb-3 flex items-center gap-2">

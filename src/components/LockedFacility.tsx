@@ -12,7 +12,11 @@ export function LockedFacility({
 
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
-      <FacilityHeader title={badge.facilityLabel} />
+      <FacilityHeader
+        title={badge.facilityLabel}
+        iconSrc={`/icons/${badge.facilityKey}.png`}
+        centered
+      />
       <div className="rounded-xl border border-village-border bg-village-paper p-6 text-center">
         <p className="text-3xl">🔒</p>
         <p className="mt-3 text-sm leading-relaxed text-village-ink/70">

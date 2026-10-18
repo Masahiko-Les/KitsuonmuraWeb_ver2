@@ -48,6 +48,8 @@ export default async function FieldPage() {
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
         title="自分の家の畑"
+        iconSrc="/icons/field.png"
+        centered
         description="自分ができたことを種として植え、植えたその日から1日1回、自分で水をやりましょう。水をやるたびに実が1つ育ちます。1つの種につき最大10個で収穫は終わり、また新しい種を植えられます。"
       />
 

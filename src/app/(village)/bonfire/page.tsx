@@ -104,6 +104,8 @@ export default async function BonfirePage() {
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
         title="焚き火"
+        iconSrc="/icons/bonfire.png"
+        centered
         description="焚き火を囲みながら、吃音にまつわる日々の気持ちや出来事を、ポツリポツリとつぶやいてみませんか。"
       />
 

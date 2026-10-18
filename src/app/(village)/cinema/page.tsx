@@ -29,6 +29,8 @@ export default async function CinemaPage() {
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
       <FacilityHeader
         title="映画館"
+        iconSrc="/icons/cinema.png"
+        centered
         description="吃音にまつわる映画を、静かに観ていきませんか"
       />
 

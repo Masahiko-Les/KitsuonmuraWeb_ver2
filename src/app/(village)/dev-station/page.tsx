@@ -15,5 +15,5 @@ export default async function DevStationPage() {
     );
   }
 
-  return <ComingSoon title="開発局" />;
+  return <ComingSoon title="開発局" iconSrc="/icons/dev-station.png" />;
 }

@@ -15,5 +15,5 @@ export default async function ResearchLabPage() {
     );
   }
 
-  return <ComingSoon title="研究所" />;
+  return <ComingSoon title="研究所" iconSrc="/icons/research-lab.png" />;
 }

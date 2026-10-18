@@ -10,6 +10,8 @@ export default async function TownHallPage() {
     <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8">
       <FacilityHeader
         title="村役場"
+        iconSrc="/icons/town-hall.png"
+        centered
         description="あなたの住民票の確認・編集や、村人の一覧はこちらから。"
       />
 
