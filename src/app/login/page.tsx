@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { LoginForm } from "./LoginForm";
 
 export default function LoginPage() {
@@ -12,6 +13,12 @@ export default function LoginPage() {
         className="object-cover opacity-40"
       />
       <div className="relative z-10 w-full max-w-sm rounded-2xl border border-village-border bg-village-paper/95 p-8 shadow-lg">
+        <Link
+          href="/"
+          className="mb-4 inline-block text-sm text-village-ink/50 hover:text-village-ember"
+        >
+          &lt; トップページ
+        </Link>
         <h1 className="mb-6 text-center font-serif text-2xl text-village-ink">
           ログイン
         </h1>

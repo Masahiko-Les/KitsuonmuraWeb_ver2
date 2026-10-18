@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { SignupForm } from "./SignupForm";
 
 export default function SignupPage() {
@@ -12,6 +13,12 @@ export default function SignupPage() {
         className="object-cover opacity-40"
       />
       <div className="relative z-10 w-full max-w-sm rounded-2xl border border-village-border bg-village-paper/95 p-8 shadow-lg">
+        <Link
+          href="/"
+          className="mb-4 inline-block text-sm text-village-ink/50 hover:text-village-ember"
+        >
+          &lt; トップページ
+        </Link>
         <h1 className="mb-6 text-center font-serif text-2xl text-village-ink">
           新規登録
         </h1>
