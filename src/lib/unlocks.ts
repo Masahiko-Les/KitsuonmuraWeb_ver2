@@ -19,7 +19,7 @@ export interface BadgeDefinition {
 }
 
 export const BADGES: BadgeDefinition[] = [
-  { badgeNumber: 1, requiredGifts: 5, facilityKey: "desert", facilityLabel: "砂漠の開拓" },
+  { badgeNumber: 1, requiredGifts: 5, facilityKey: "desert", facilityLabel: "砂漠" },
   { badgeNumber: 2, requiredGifts: 10, facilityKey: "library", facilityLabel: "図書館" },
   { badgeNumber: 3, requiredGifts: 50, facilityKey: "cinema", facilityLabel: "映画館" },
   { badgeNumber: 4, requiredGifts: 100, facilityKey: "dev-station", facilityLabel: "開発局" },

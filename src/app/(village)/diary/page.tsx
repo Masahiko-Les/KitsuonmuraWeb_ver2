@@ -267,8 +267,8 @@ export default async function DiaryPage() {
       itemName: catalog?.name ?? "花",
       itemEmoji: catalog?.emoji ?? "🌸",
       suffix: others
-        ? `を砂漠の開拓で${others}と収穫しました。`
-        : "を砂漠の開拓で収穫しました。",
+        ? `を砂漠で${others}と収穫しました。`
+        : "を砂漠で収穫しました。",
     });
   }
 
