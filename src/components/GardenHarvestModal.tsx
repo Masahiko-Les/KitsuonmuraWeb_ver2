@@ -57,30 +57,38 @@ export function GardenHarvestModal({
   return (
     <dialog
       ref={dialogRef}
-      className="fixed inset-0 z-50 m-auto flex max-h-[80vh] w-[calc(100%-3rem)] max-w-md flex-col overflow-hidden rounded-xl border border-village-border bg-village-paper p-0 backdrop:bg-village-ink/40"
+      className="village-auth-card fixed inset-0 z-50 m-auto flex max-h-[80vh] w-[calc(100%-3rem)] max-w-md flex-col overflow-hidden rounded-[28px] border border-village-gold/40 p-0 shadow-[0_20px_50px_rgba(31,20,14,0.45)] backdrop:bg-village-ink/50"
     >
-      <div className="flex shrink-0 items-center justify-between p-5 pb-4">
-        <h2 className="font-serif text-lg text-village-ink">
-          収穫物のお知らせ
-        </h2>
+      <div className="pointer-events-none absolute inset-[7px] rounded-[21px] border border-village-gold/25" />
+
+      <div className="relative shrink-0 p-5 pb-4">
         <button
           type="button"
           onClick={() => {
             dialogRef.current?.close();
             setDismissedAtCount(harvests.length);
           }}
-          className="text-sm text-village-ink/50 hover:text-village-ink"
+          aria-label="閉じる"
+          className="absolute right-4 top-4 text-village-ink/40 transition-colors hover:text-village-ink"
         >
-          閉じる
+          ✕
         </button>
+        <div className="mb-3 flex items-center justify-center gap-3 text-village-gold/70">
+          <span className="h-px w-8 bg-current" />
+          <span className="h-1.5 w-1.5 rotate-45 border border-current" />
+          <span className="h-px w-8 bg-current" />
+        </div>
+        <h2 className="text-center font-serif text-lg text-village-ink">
+          収穫物のお知らせ
+        </h2>
       </div>
 
-      <ul className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-5 pt-0">
+      <ul className="relative flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-5 pt-0">
         {harvests.map(({ seed, plantedBy, others }) => (
           <li
             key={seed.id}
             data-seed-id={seed.id}
-            className="rounded-xl border border-village-border bg-white p-4"
+            className="rounded-xl border border-village-gold/30 bg-village-paper/70 p-4"
           >
             <p className="text-sm leading-relaxed text-village-ink/90">
               農園で
@@ -100,7 +108,7 @@ export function GardenHarvestModal({
             >
               <button
                 type="submit"
-                className="rounded-full bg-village-ember px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                className="rounded-full bg-gradient-to-b from-[#c06f45] to-[#8a4326] px-5 py-2 text-sm font-medium text-village-parchment shadow-[0_6px_16px_rgba(90,46,26,0.4)] transition-all hover:from-[#c97a4f] hover:to-[#96492b] active:scale-[0.98]"
               >
                 受け取る
               </button>
