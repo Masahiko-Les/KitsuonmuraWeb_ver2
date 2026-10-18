@@ -42,6 +42,30 @@ export async function signupAction(
   });
 
   if (error) {
+    // Logged server-side only — the user-facing message stays generic so we
+    // don't leak provider internals, but this makes the real cause visible
+    // in server logs instead of requiring a live repro to diagnose.
+    console.error("signupAction: supabase.auth.signUp failed", {
+      code: error.code,
+      status: error.status,
+      message: error.message,
+    });
+
+    if (error.code === "over_email_send_rate_limit") {
+      return {
+        error:
+          "確認メールの送信が混み合っています。しばらく時間をおいてから再度お試しください。",
+      };
+    }
+
+    if (error.code === "email_address_invalid") {
+      return { error: "そのメールアドレスは使用できません。" };
+    }
+
+    if (error.code === "user_already_exists") {
+      return { error: "このメールアドレスはすでに登録されています。" };
+    }
+
     return { error: "登録できませんでした。時間をおいて再度お試しください。" };
   }
 
