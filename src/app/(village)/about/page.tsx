@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 const MAYOR_INTRO = `吃音村の村長、ミリエルと申します。
 
 吃音村の村人になっていただき、ありがとうございます。
@@ -7,20 +5,22 @@ const MAYOR_INTRO = `吃音村の村長、ミリエルと申します。
 この村はまだまだ開発途中ですが、村人みんなでどんな村を作っていきたいか、私の想いを少しだけお話ししたいと思います。`;
 
 const FACILITY_LINKS = [
-  { label: "住民票", href: "/town-hall" },
-  { label: "農園", href: "/garden" },
-  { label: "砂漠", href: "/desert" },
-  { label: "自分の家の畑", href: "/field" },
-  { label: "図書館", href: "/library" },
+  { label: "住民票", id: "profile" },
+  { label: "農園", id: "farm" },
+  { label: "砂漠", id: "desert" },
+  { label: "自分の家の畑", id: "field" },
+  { label: "図書館", id: "library" },
 ];
 
 interface AboutSection {
+  id: string;
   heading: string;
   body: string;
 }
 
 const SECTIONS: AboutSection[] = [
   {
+    id: "profile",
     heading: "住民票",
     body: `この村では、まず村役場で自分の住民票を作成します。
 
@@ -41,6 +41,7 @@ const SECTIONS: AboutSection[] = [
 住民票を、単なる自己紹介ではなく、自分自身を知り、他の村人とつながるための場所にしていきたいと思っています。`,
   },
   {
+    id: "farm",
     heading: "農園について",
     body: `この村には、村人たちが一緒に作物を育てる農園があります。
 
@@ -71,6 +72,7 @@ const SECTIONS: AboutSection[] = [
 農園を、そんな場所に育てていきたいと思っています。`,
   },
   {
+    id: "desert",
     heading: "砂漠について",
     body: `この村のはずれには、広大な砂漠が広がっています。
 
@@ -111,6 +113,7 @@ const SECTIONS: AboutSection[] = [
 砂漠を、そんな場所に育てていきたいと思っています。`,
   },
   {
+    id: "field",
     heading: "自分の家の畑について",
     body: `この村では、一人ひとりの村人が、自分の家に小さな畑を持っています。
 
@@ -143,6 +146,7 @@ const SECTIONS: AboutSection[] = [
 自分の家の畑を、そんな場所にしていきたいと思っています。`,
   },
   {
+    id: "library",
     heading: "図書館について",
     body: `この村には、村人たちが読んだ本の感想を共有し合える図書館があります。
 
@@ -192,20 +196,22 @@ export default function AboutPage() {
             {MAYOR_INTRO}
           </p>
 
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
-            {FACILITY_LINKS.map((facility) => (
-              <Link
-                key={facility.href}
-                href={facility.href}
-                className="rounded-full border border-village-gold/60 px-3 py-1 text-sm text-village-parchment transition-colors hover:bg-village-gold/10"
-              >
-                {facility.label}
-              </Link>
+          <p className="mt-5 text-center text-sm text-village-parchment/80">
+            {FACILITY_LINKS.map((facility, index) => (
+              <span key={facility.id}>
+                <a
+                  href={`#${facility.id}`}
+                  className="text-village-parchment underline-offset-4 transition-colors hover:text-village-gold hover:underline"
+                >
+                  {facility.label}
+                </a>
+                {index < FACILITY_LINKS.length - 1 ? " / " : ""}
+              </span>
             ))}
-          </div>
+          </p>
 
           {SECTIONS.map((section) => (
-            <div key={section.heading}>
+            <div key={section.id} id={section.id}>
               <h2 className="mt-6 mb-3 text-center font-serif text-lg text-village-parchment">
                 {section.heading}
               </h2>
