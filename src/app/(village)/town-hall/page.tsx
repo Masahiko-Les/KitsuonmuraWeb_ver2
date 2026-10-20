@@ -16,8 +16,6 @@ export default async function TownHallPage() {
       />
 
       <section className="flex flex-col gap-4">
-        <ProfileCard profile={profile} />
-
         <div className="flex flex-wrap gap-3">
           <Link
             href="/town-hall/edit"
@@ -32,6 +30,8 @@ export default async function TownHallPage() {
             村人一覧を見る
           </Link>
         </div>
+
+        <ProfileCard profile={profile} />
       </section>
     </main>
   );
