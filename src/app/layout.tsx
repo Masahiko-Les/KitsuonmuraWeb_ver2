@@ -33,7 +33,7 @@ const headingFont = localFont({
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.kitsuonmura.com";
 const SITE_DESCRIPTION =
-  "吃音を持つ人たちが、弱さや苦労を分かち合う小さな村";
+  "吃音を持つ人たちが、弱さや挑戦を分かち合い、吃音を深める小さな村";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

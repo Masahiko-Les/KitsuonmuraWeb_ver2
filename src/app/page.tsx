@@ -17,7 +17,7 @@ const WEBSITE_JSON_LD = {
   "@type": "WebSite",
   name: "吃音村",
   url: "https://www.kitsuonmura.com",
-  description: "吃音を持つ人たちが、弱さや苦労を分かち合う小さな村",
+  description: "吃音を持つ人たちが、弱さや挑戦を分かち合い、吃音を深める小さな村",
   inLanguage: "ja",
 };
 
