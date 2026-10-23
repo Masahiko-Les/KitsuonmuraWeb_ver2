@@ -2,9 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
+import { CropIcon } from "@/components/CropIcon";
+import { FlowerIcon } from "@/components/FlowerIcon";
 import { BADGES } from "@/lib/unlocks";
 import { CROP_ICON_SRC } from "@/config/cropIcons";
 import { FLOWER_ICON_SRC } from "@/config/flowerIcons";
+import { getDiaryEntries, formatDiaryDate } from "@/lib/diary";
 
 interface OwnedCrop {
   id: string;
@@ -28,19 +31,21 @@ interface OwnedFlower {
 }
 
 export default async function MyHousePage() {
-  const { supabase, profile } = await requireProfile();
+  const { supabase, user, profile } = await requireProfile();
 
-  const [{ data: cropsData }, { data: flowersData }] = await Promise.all([
-    supabase
-      .from("user_crops")
-      .select("id, harvests(crop_catalog(id, name, emoji))")
-      .is("offered_at", null)
-      .order("created_at", { ascending: true }),
-    supabase
-      .from("user_flowers")
-      .select("id, desert_blooms(flower_catalog(id, name, emoji))")
-      .order("created_at", { ascending: true }),
-  ]);
+  const [{ data: cropsData }, { data: flowersData }, diaryEntries] =
+    await Promise.all([
+      supabase
+        .from("user_crops")
+        .select("id, harvests(crop_catalog(id, name, emoji))")
+        .is("offered_at", null)
+        .order("created_at", { ascending: true }),
+      supabase
+        .from("user_flowers")
+        .select("id, desert_blooms(flower_catalog(id, name, emoji))")
+        .order("created_at", { ascending: true }),
+      getDiaryEntries(supabase, user.id),
+    ]);
 
   const crops = (cropsData ?? []) as unknown as OwnedCrop[];
   const flowers = (flowersData ?? []) as unknown as OwnedFlower[];
@@ -159,15 +164,62 @@ export default async function MyHousePage() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-1.5 py-1 text-center">
-            <span className="text-4xl">🌼</span>
-            <p className="text-sm text-village-ink/50">
-              まだ花を咲かせていません。
-              <br />
-              砂漠で種を蒔いて、水をあげましょう。
-            </p>
-          </div>
+          <p className="text-center text-sm text-village-ink/50">
+            まだ花を持っていません。砂漠で種を蒔いて、水をあげましょう。
+          </p>
         )}
+      </section>
+
+      <section className="mt-5 rounded-2xl border border-village-gold/70 bg-village-parchment p-4 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-xl">📔</span>
+          <h2 className="font-serif text-lg text-village-ink">日記</h2>
+        </div>
+        {diaryEntries.length > 0 ? (
+          <ul className="flex flex-col gap-2">
+            {diaryEntries.slice(0, 3).map((entry, index) => (
+              <li
+                key={index}
+                className="rounded-xl border border-village-border bg-white px-3 py-2.5"
+              >
+                <p className="mb-1 text-xs text-village-ink/50">
+                  {formatDiaryDate(entry.date)}
+                </p>
+                <p className="flex items-start gap-1.5 text-sm leading-relaxed text-village-ink/90">
+                  {entry.itemKind === "flower" ? (
+                    <FlowerIcon
+                      name={entry.itemName}
+                      emoji={entry.itemEmoji}
+                      size={16}
+                      className="mt-0.5"
+                    />
+                  ) : (
+                    <CropIcon
+                      name={entry.itemName}
+                      emoji={entry.itemEmoji}
+                      size={16}
+                      className="mt-0.5"
+                    />
+                  )}
+                  <span>
+                    {entry.itemName}
+                    {entry.suffix}
+                  </span>
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-center text-sm text-village-ink/50">
+            まだ記録がありません。村のみんなと関わってみましょう。
+          </p>
+        )}
+        <Link
+          href="/diary"
+          className="mt-3 inline-block rounded-full border border-village-border bg-village-paper px-5 py-2 text-sm font-medium text-village-ink transition-colors hover:bg-village-ink/5"
+        >
+          日記をもっと読む
+        </Link>
       </section>
 
       <section className="mt-5 rounded-2xl border border-village-gold/70 bg-village-parchment p-4 shadow-sm">
@@ -226,31 +278,17 @@ export default async function MyHousePage() {
         </div>
       </section>
 
-      <section className="mt-5 flex flex-col gap-2">
-        <h2 className="text-sm font-medium text-village-ink/80">住民票</h2>
-        <div>
-          <Link
-            href="/town-hall"
-            className="rounded-full bg-village-ember px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
-          >
-            住民票を見る
-          </Link>
+      <section className="mt-5 rounded-2xl border border-village-gold/70 bg-village-parchment p-4 shadow-sm">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-xl">🪪</span>
+          <h2 className="font-serif text-lg text-village-ink">住民票</h2>
         </div>
-      </section>
-
-      <section className="mt-5 flex flex-col gap-2">
-        <h2 className="text-sm font-medium text-village-ink/80">日記</h2>
-        <p className="text-sm text-village-ink/60">
-          この村でのあなたの活動やもらったものが記録されます。
-        </p>
-        <div>
-          <Link
-            href="/diary"
-            className="rounded-full border border-village-border bg-village-paper px-5 py-2 text-sm font-medium text-village-ink transition-colors hover:bg-village-ink/5"
-          >
-            日記を見る
-          </Link>
-        </div>
+        <Link
+          href="/town-hall"
+          className="inline-block rounded-full bg-village-ember px-5 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+        >
+          住民票を見る
+        </Link>
       </section>
     </main>
   );
