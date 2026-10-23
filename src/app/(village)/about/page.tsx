@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "村長の想い",
+  title: "村人のみなさまへ",
   description:
     "吃音村の村長ミリエルが、住民票・農園・砂漠・自分の家の畑・図書館という村の施設に込めた想いを綴ります。",
   alternates: { canonical: "/about" },
-  openGraph: { title: "村長の想い | 吃音村" },
+  openGraph: { title: "村人のみなさまへ | 吃音村" },
 };
 
 const MAYOR_INTRO = `吃音村の村長、ミリエルと申します。
 
-吃音村の村人になっていただき、ありがとうございます。
-
-この村はまだまだ開発途中ですが、村人みんなでどんな村を作っていきたいか、私の想いを少しだけお話ししたいと思います。`;
+この村はまだまだ開発途中ではありますが、みんなでどんな村を作っていきたいか、私の想いを少しだけお話ししたいと思います。`;
 
 const FACILITY_LINKS = [
   { label: "住民票", id: "profile" },
@@ -31,10 +29,10 @@ interface AboutSection {
 const SECTIONS: AboutSection[] = [
   {
     id: "profile",
-    heading: "住民票",
+    heading: "住民票について",
     body: `この村では、まず村役場で自分の住民票を作成します。
 
-住民票には、自分の吃音について詳しく記録できる欄があります。
+住民票には、自分の吃音について詳しく記載できる欄があります。
 
 例えば、「自分の吃音は難発型か、連発型か、伸発型か」「どんな音が言いにくいか」「どんな場面で言葉が出にくくなるか」「これまで吃音とどのように向き合ってきたか」といったことです。
 
@@ -200,7 +198,7 @@ export default function AboutPage() {
       <section className="village-woodgrain rounded-2xl px-4 py-6">
         <div className="rounded-xl border border-village-gold/40 bg-village-timber/60 p-5">
           <h1 className="mb-3 text-center font-serif text-lg text-village-parchment">
-            村長の想い
+            村人のみなさまへ
           </h1>
           <p className="whitespace-pre-wrap text-sm leading-relaxed text-village-parchment/80">
             {MAYOR_INTRO}
