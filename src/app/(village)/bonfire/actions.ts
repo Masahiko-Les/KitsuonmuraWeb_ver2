@@ -51,6 +51,20 @@ export async function giftCropAction(
   revalidatePath("/bonfire");
 }
 
+export async function giftFlowerAction(
+  userFlowerId: string,
+  recipientId: string,
+  postId: string,
+) {
+  const supabase = await createClient();
+  await supabase.rpc("gift_flower", {
+    p_user_flower_id: userFlowerId,
+    p_recipient_id: recipientId,
+    p_bonfire_post_id: postId,
+  });
+  revalidatePath("/bonfire");
+}
+
 export async function deleteBonfirePostAction(postId: string) {
   const supabase = await createClient();
   const {

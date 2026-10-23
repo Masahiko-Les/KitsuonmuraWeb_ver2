@@ -1,61 +1,86 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
 import { CropIcon } from "@/components/CropIcon";
+import { FlowerIcon } from "@/components/FlowerIcon";
 import type { BonfirePost, Profile } from "@/types/database";
 import { BonfireForm } from "./BonfireForm";
-import { deleteBonfirePostAction, giftCropAction } from "./actions";
+import { GiftPickerButton, type GiftableItem } from "./GiftPickerButton";
+import { deleteBonfirePostAction } from "./actions";
+
+interface CatalogRef {
+  name: string;
+  emoji: string | null;
+}
 
 interface GiftableCrop {
   id: string;
-  harvests: { crop_catalog: { name: string; emoji: string | null } | null } | null;
+  harvests: { crop_catalog: CatalogRef | null } | null;
 }
 
-interface PostGift {
+interface GiftableFlower {
+  id: string;
+  desert_blooms: { flower_catalog: CatalogRef | null } | null;
+}
+
+interface PostCropGift {
   id: string;
   bonfire_post_id: string | null;
-  harvests: { crop_catalog: { name: string; emoji: string | null } | null } | null;
+  harvests: { crop_catalog: CatalogRef | null } | null;
+}
+
+interface PostFlowerGift {
+  id: string;
+  bonfire_post_id: string | null;
+  desert_blooms: { flower_catalog: CatalogRef | null } | null;
 }
 
 interface GroupedGift {
   key: string;
+  kind: "crop" | "flower";
   name: string;
   emoji: string | null;
   count: number;
-}
-
-interface GroupedGiftableCrop {
-  key: string;
-  name: string;
-  emoji: string | null;
-  count: number;
-  ids: string[];
 }
 
 export default async function BonfirePage() {
   const { supabase, user } = await requireProfile();
 
-  const [{ data: postsData }, { data: giftableCropsData }, { data: postGiftsData }] =
-    await Promise.all([
-      supabase
-        .from("bonfire_posts")
-        .select("*")
-        .is("deleted_at", null)
-        .order("created_at", { ascending: false })
-        .limit(100),
-      supabase
-        .from("user_crops")
-        .select("id, harvests(crop_catalog(name, emoji))")
-        .is("offered_at", null)
-        .order("created_at", { ascending: true }),
-      supabase
-        .from("crop_gifts")
-        .select("id, bonfire_post_id, harvests(crop_catalog(name, emoji))"),
-    ]);
+  const [
+    { data: postsData },
+    { data: giftableCropsData },
+    { data: giftableFlowersData },
+    { data: postCropGiftsData },
+    { data: postFlowerGiftsData },
+  ] = await Promise.all([
+    supabase
+      .from("bonfire_posts")
+      .select("*")
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(100),
+    supabase
+      .from("user_crops")
+      .select("id, harvests(crop_catalog(name, emoji))")
+      .is("offered_at", null)
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("user_flowers")
+      .select("id, desert_blooms(flower_catalog(name, emoji))")
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("crop_gifts")
+      .select("id, bonfire_post_id, harvests(crop_catalog(name, emoji))"),
+    supabase
+      .from("flower_gifts")
+      .select("id, bonfire_post_id, desert_blooms(flower_catalog(name, emoji))"),
+  ]);
 
   const posts = (postsData ?? []) as BonfirePost[];
   const userIds = [...new Set(posts.map((post) => post.user_id))];
   const giftableCrops = (giftableCropsData ?? []) as unknown as GiftableCrop[];
-  const postGifts = (postGiftsData ?? []) as unknown as PostGift[];
+  const giftableFlowers = (giftableFlowersData ?? []) as unknown as GiftableFlower[];
+  const postCropGifts = (postCropGiftsData ?? []) as unknown as PostCropGift[];
+  const postFlowerGifts = (postFlowerGiftsData ?? []) as unknown as PostFlowerGift[];
 
   const { data: profilesData } = userIds.length
     ? await supabase.from("profiles").select("*").in("user_id", userIds)
@@ -66,39 +91,76 @@ export default async function BonfirePage() {
   );
 
   const giftsByPostId = new Map<string, GroupedGift[]>();
-  for (const gift of postGifts) {
-    if (!gift.bonfire_post_id) continue;
-    const catalog = gift.harvests?.crop_catalog;
-    const key = catalog?.name ?? "作物";
-    const list = giftsByPostId.get(gift.bonfire_post_id) ?? [];
+  function addGift(
+    postId: string | null,
+    kind: "crop" | "flower",
+    catalog: CatalogRef | null | undefined,
+  ) {
+    if (!postId) return;
+    const name = catalog?.name ?? (kind === "crop" ? "作物" : "花");
+    const key = `${kind}:${name}`;
+    const list = giftsByPostId.get(postId) ?? [];
     const existing = list.find((entry) => entry.key === key);
     if (existing) {
       existing.count += 1;
     } else {
-      list.push({ key, name: key, emoji: catalog?.emoji ?? "🌾", count: 1 });
+      list.push({
+        key,
+        kind,
+        name,
+        emoji: catalog?.emoji ?? (kind === "crop" ? "🌾" : "🌸"),
+        count: 1,
+      });
     }
-    giftsByPostId.set(gift.bonfire_post_id, list);
+    giftsByPostId.set(postId, list);
+  }
+  for (const gift of postCropGifts) {
+    addGift(gift.bonfire_post_id, "crop", gift.harvests?.crop_catalog);
+  }
+  for (const gift of postFlowerGifts) {
+    addGift(gift.bonfire_post_id, "flower", gift.desert_blooms?.flower_catalog);
   }
 
-  const groupedGiftableCropsByKey = new Map<string, GroupedGiftableCrop>();
+  const giftableItemsByKey = new Map<string, GiftableItem>();
   for (const crop of giftableCrops) {
     const catalog = crop.harvests?.crop_catalog;
-    const key = catalog?.name ?? "作物";
-    const existing = groupedGiftableCropsByKey.get(key);
+    const name = catalog?.name ?? "作物";
+    const key = `crop:${name}`;
+    const existing = giftableItemsByKey.get(key);
     if (existing) {
       existing.count += 1;
       existing.ids.push(crop.id);
     } else {
-      groupedGiftableCropsByKey.set(key, {
+      giftableItemsByKey.set(key, {
         key,
-        name: key,
+        kind: "crop",
+        name,
         emoji: catalog?.emoji ?? "🌾",
         count: 1,
         ids: [crop.id],
       });
     }
   }
-  const groupedGiftableCrops = Array.from(groupedGiftableCropsByKey.values());
+  for (const flower of giftableFlowers) {
+    const catalog = flower.desert_blooms?.flower_catalog;
+    const name = catalog?.name ?? "花";
+    const key = `flower:${name}`;
+    const existing = giftableItemsByKey.get(key);
+    if (existing) {
+      existing.count += 1;
+      existing.ids.push(flower.id);
+    } else {
+      giftableItemsByKey.set(key, {
+        key,
+        kind: "flower",
+        name,
+        emoji: catalog?.emoji ?? "🌸",
+        count: 1,
+        ids: [flower.id],
+      });
+    }
+  }
+  const giftableItems = Array.from(giftableItemsByKey.values());
 
   return (
     <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
@@ -139,7 +201,11 @@ export default async function BonfirePage() {
                       key={gift.key}
                       className="flex items-center gap-1 rounded-full bg-village-leaf/10 px-3 py-1 text-xs text-village-leaf"
                     >
-                      <CropIcon name={gift.name} emoji={gift.emoji} size={16} />
+                      {gift.kind === "flower" ? (
+                        <FlowerIcon name={gift.name} emoji={gift.emoji} size={16} />
+                      ) : (
+                        <CropIcon name={gift.name} emoji={gift.emoji} size={16} />
+                      )}
                       {gift.name}
                       {gift.count > 1 ? ` x${gift.count}` : ""}
                     </span>
@@ -160,44 +226,11 @@ export default async function BonfirePage() {
                   </button>
                 </form>
               ) : (
-                <details className="mt-3">
-                  <summary className="w-fit cursor-pointer rounded-full border border-village-leaf px-4 py-1.5 text-xs font-medium text-village-leaf transition-colors hover:bg-village-leaf/10">
-                    農作物をあげる
-                  </summary>
-                  <ul className="mt-2 flex flex-col gap-2">
-                    {groupedGiftableCrops.map((crop) => (
-                      <li
-                        key={crop.key}
-                        className="flex items-center justify-between rounded-lg border border-village-border bg-white px-3 py-2"
-                      >
-                        <span className="flex items-center gap-1.5 text-sm text-village-ink">
-                          <CropIcon name={crop.name} emoji={crop.emoji} size={20} />
-                          {crop.name} x{crop.count}
-                        </span>
-                        <form
-                          action={giftCropAction.bind(
-                            null,
-                            crop.ids[0],
-                            post.user_id,
-                            post.id,
-                          )}
-                        >
-                          <button
-                            type="submit"
-                            className="rounded-full bg-village-ember px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90"
-                          >
-                            あげる
-                          </button>
-                        </form>
-                      </li>
-                    ))}
-                    {groupedGiftableCrops.length === 0 ? (
-                      <p className="text-xs text-village-ink/40">
-                        あげられる作物がありません
-                      </p>
-                    ) : null}
-                  </ul>
-                </details>
+                <GiftPickerButton
+                  items={giftableItems}
+                  recipientId={post.user_id}
+                  postId={post.id}
+                />
               )}
             </li>
           );
