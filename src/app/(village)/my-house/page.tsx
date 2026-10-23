@@ -2,12 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
-import { CropIcon } from "@/components/CropIcon";
-import { FlowerIcon } from "@/components/FlowerIcon";
+import { DiaryEntryRow } from "@/components/DiaryEntryRow";
 import { BADGES } from "@/lib/unlocks";
 import { CROP_ICON_SRC } from "@/config/cropIcons";
 import { FLOWER_ICON_SRC } from "@/config/flowerIcons";
-import { getDiaryEntries, formatDiaryDate } from "@/lib/diary";
+import { getDiaryEntries } from "@/lib/diary";
 
 interface OwnedCrop {
   id: string;
@@ -182,30 +181,7 @@ export default async function MyHousePage() {
                 key={index}
                 className="rounded-xl border border-village-border bg-white px-3 py-2.5"
               >
-                <p className="mb-1 text-xs text-village-ink/50">
-                  {formatDiaryDate(entry.date)}
-                </p>
-                <p className="flex items-start gap-1.5 text-sm leading-relaxed text-village-ink/90">
-                  {entry.itemKind === "flower" ? (
-                    <FlowerIcon
-                      name={entry.itemName}
-                      emoji={entry.itemEmoji}
-                      size={16}
-                      className="mt-0.5"
-                    />
-                  ) : (
-                    <CropIcon
-                      name={entry.itemName}
-                      emoji={entry.itemEmoji}
-                      size={16}
-                      className="mt-0.5"
-                    />
-                  )}
-                  <span>
-                    {entry.itemName}
-                    {entry.suffix}
-                  </span>
-                </p>
+                <DiaryEntryRow entry={entry} iconSize={16} />
               </li>
             ))}
           </ul>

@@ -48,9 +48,35 @@ interface DesertClaimRow {
   } | null;
 }
 
+interface CropGiftGivenRow {
+  id: string;
+  created_at: string;
+  recipient_id: string;
+  harvests: { crop_catalog: CatalogRef | null } | null;
+}
+
+interface FlowerGiftGivenRow {
+  id: string;
+  created_at: string;
+  recipient_id: string;
+  desert_blooms: { flower_catalog: CatalogRef | null } | null;
+}
+
+interface MyGardenWateringRow {
+  id: string;
+  created_at: string;
+  garden_seeds: { user_id: string } | null;
+}
+
+interface MyDesertWateringRow {
+  id: string;
+  created_at: string;
+  desert_stories: { user_id: string } | null;
+}
+
 export interface DiaryEntry {
   date: string;
-  itemKind: "crop" | "flower";
+  itemKind: "crop" | "flower" | "action";
   itemName: string;
   itemEmoji: string | null;
   suffix: string;
@@ -86,6 +112,11 @@ export async function getDiaryEntries(
     { data: ownFieldData },
     { data: gardenClaimsData },
     { data: desertClaimsData },
+    { data: cropGiftsGivenData },
+    { data: flowerGiftsGivenData },
+    { data: cinemaGiftsGivenData },
+    { data: myGardenWateringsData },
+    { data: myDesertWateringsData },
   ] = await Promise.all([
     supabase
       .from("crop_gifts")
@@ -120,6 +151,30 @@ export async function getDiaryEntries(
         "claimed_at, bloom_id, desert_blooms(flower_catalog(name, emoji), story_id, desert_stories(user_id))",
       )
       .eq("user_id", userId),
+    supabase
+      .from("crop_gifts")
+      .select("id, created_at, recipient_id, harvests(crop_catalog(name, emoji))")
+      .eq("giver_id", userId),
+    supabase
+      .from("flower_gifts")
+      .select(
+        "id, created_at, recipient_id, desert_blooms(flower_catalog(name, emoji))",
+      )
+      .eq("giver_id", userId),
+    supabase
+      .from("cinema_flower_gifts")
+      .select(
+        "id, created_at, recipient_id, desert_blooms(flower_catalog(name, emoji))",
+      )
+      .eq("giver_id", userId),
+    supabase
+      .from("waterings")
+      .select("id, created_at, garden_seeds(user_id)")
+      .eq("user_id", userId),
+    supabase
+      .from("desert_waterings")
+      .select("id, created_at, desert_stories(user_id)")
+      .eq("user_id", userId),
   ]);
 
   const cropGifts = (cropGiftsData ?? []) as unknown as CropGiftRow[];
@@ -128,6 +183,11 @@ export async function getDiaryEntries(
   const ownFieldHarvests = (ownFieldData ?? []) as unknown as OwnFieldHarvestRow[];
   const gardenClaims = (gardenClaimsData ?? []) as unknown as GardenClaimRow[];
   const desertClaims = (desertClaimsData ?? []) as unknown as DesertClaimRow[];
+  const cropGiftsGiven = (cropGiftsGivenData ?? []) as unknown as CropGiftGivenRow[];
+  const flowerGiftsGiven = (flowerGiftsGivenData ?? []) as unknown as FlowerGiftGivenRow[];
+  const cinemaGiftsGiven = (cinemaGiftsGivenData ?? []) as unknown as FlowerGiftGivenRow[];
+  const myGardenWaterings = (myGardenWateringsData ?? []) as unknown as MyGardenWateringRow[];
+  const myDesertWaterings = (myDesertWateringsData ?? []) as unknown as MyDesertWateringRow[];
 
   const gardenSeedIds = [
     ...new Set(
@@ -184,6 +244,11 @@ export async function getDiaryEntries(
         c.desert_blooms?.desert_stories?.user_id,
         ...(waterersByStoryId.get(c.desert_blooms?.story_id ?? "") ?? []),
       ]),
+      ...cropGiftsGiven.map((g) => g.recipient_id),
+      ...flowerGiftsGiven.map((g) => g.recipient_id),
+      ...cinemaGiftsGiven.map((g) => g.recipient_id),
+      ...myGardenWaterings.map((w) => w.garden_seeds?.user_id),
+      ...myDesertWaterings.map((w) => w.desert_stories?.user_id),
     ].filter((id): id is string => Boolean(id))),
   ];
 
@@ -269,6 +334,50 @@ export async function getDiaryEntries(
       suffix: others
         ? `を砂漠で${others}と収穫しました。`
         : "を砂漠で収穫しました。",
+    });
+  }
+
+  for (const gift of cropGiftsGiven) {
+    const catalog = gift.harvests?.crop_catalog;
+    entries.push({
+      date: gift.created_at,
+      itemKind: "crop",
+      itemName: catalog?.name ?? "作物",
+      itemEmoji: catalog?.emoji ?? "🌾",
+      suffix: `を${nicknameById.get(gift.recipient_id) ?? "名もなき村人"}さんにあげました。`,
+    });
+  }
+
+  for (const gift of [...flowerGiftsGiven, ...cinemaGiftsGiven]) {
+    const catalog = gift.desert_blooms?.flower_catalog;
+    entries.push({
+      date: gift.created_at,
+      itemKind: "flower",
+      itemName: catalog?.name ?? "花",
+      itemEmoji: catalog?.emoji ?? "🌸",
+      suffix: `を${nicknameById.get(gift.recipient_id) ?? "名もなき村人"}さんにあげました。`,
+    });
+  }
+
+  for (const watering of myGardenWaterings) {
+    const planterId = watering.garden_seeds?.user_id;
+    entries.push({
+      date: watering.created_at,
+      itemKind: "action",
+      itemName: "",
+      itemEmoji: "💧",
+      suffix: `農園で${nicknameById.get(planterId ?? "") ?? "名もなき村人"}さんの種に水をあげました。`,
+    });
+  }
+
+  for (const watering of myDesertWaterings) {
+    const posterId = watering.desert_stories?.user_id;
+    entries.push({
+      date: watering.created_at,
+      itemKind: "action",
+      itemName: "",
+      itemEmoji: "💧",
+      suffix: `砂漠で${nicknameById.get(posterId ?? "") ?? "名もなき村人"}さんの種に水をあげました。`,
     });
   }
 

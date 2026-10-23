@@ -1,8 +1,7 @@
 import { requireProfile } from "@/lib/guards";
 import { FacilityHeader } from "@/components/FacilityHeader";
-import { CropIcon } from "@/components/CropIcon";
-import { FlowerIcon } from "@/components/FlowerIcon";
-import { getDiaryEntries, formatDiaryDate } from "@/lib/diary";
+import { DiaryEntryRow } from "@/components/DiaryEntryRow";
+import { getDiaryEntries } from "@/lib/diary";
 
 export default async function DiaryPage() {
   const { supabase, user } = await requireProfile();
@@ -23,30 +22,7 @@ export default async function DiaryPage() {
               key={index}
               className="rounded-xl border border-village-border bg-white px-4 py-3"
             >
-              <p className="mb-1 text-xs text-village-ink/50">
-                {formatDiaryDate(entry.date)}
-              </p>
-              <p className="flex items-start gap-1.5 text-sm leading-relaxed text-village-ink/90">
-                {entry.itemKind === "flower" ? (
-                  <FlowerIcon
-                    name={entry.itemName}
-                    emoji={entry.itemEmoji}
-                    size={18}
-                    className="mt-0.5"
-                  />
-                ) : (
-                  <CropIcon
-                    name={entry.itemName}
-                    emoji={entry.itemEmoji}
-                    size={18}
-                    className="mt-0.5"
-                  />
-                )}
-                <span>
-                  {entry.itemName}
-                  {entry.suffix}
-                </span>
-              </p>
+              <DiaryEntryRow entry={entry} iconSize={18} />
             </li>
           ))}
         </ul>
