@@ -5,6 +5,7 @@ import { FacilityHeader } from "@/components/FacilityHeader";
 import { LockedFacility } from "@/components/LockedFacility";
 import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import { FlowerIcon } from "@/components/FlowerIcon";
+import { GiftSubmitButton } from "@/components/GiftSubmitButton";
 import type { CinemaReview, MovieCatalogItem, Profile } from "@/types/database";
 import { CinemaReviewForm } from "./CinemaReviewForm";
 import { deleteCinemaReviewAction, giftFlowerAction } from "./actions";
@@ -223,22 +224,16 @@ export default async function MovieDetailPage({
                           <FlowerIcon name={flower.name} emoji={flower.emoji} size={20} />
                           {flower.name} x{flower.count}
                         </span>
-                        <form
-                          action={giftFlowerAction.bind(
-                            null,
-                            flower.ids[0],
-                            review.user_id,
-                            review.id,
-                            movieId,
-                          )}
-                        >
-                          <button
-                            type="submit"
-                            className="rounded-full bg-village-ember px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90"
-                          >
-                            あげる
-                          </button>
-                        </form>
+                        <GiftSubmitButton
+                          action={() =>
+                            giftFlowerAction(
+                              flower.ids[0],
+                              review.user_id,
+                              review.id,
+                              movieId,
+                            )
+                          }
+                        />
                       </li>
                     ))}
                     {groupedGiftableFlowers.length === 0 ? (

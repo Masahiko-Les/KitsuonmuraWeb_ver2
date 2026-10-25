@@ -5,6 +5,7 @@ import { FacilityHeader } from "@/components/FacilityHeader";
 import { LockedFacility } from "@/components/LockedFacility";
 import { getBadgeForFacility, isFacilityUnlocked } from "@/lib/unlocks";
 import { FlowerIcon } from "@/components/FlowerIcon";
+import { GiftSubmitButton } from "@/components/GiftSubmitButton";
 import type { BookCatalogItem, LibraryReview, Profile } from "@/types/database";
 import { LibraryReviewForm } from "./LibraryReviewForm";
 import { deleteLibraryReviewAction, giftFlowerAction } from "./actions";
@@ -223,22 +224,16 @@ export default async function BookDetailPage({
                           <FlowerIcon name={flower.name} emoji={flower.emoji} size={20} />
                           {flower.name} x{flower.count}
                         </span>
-                        <form
-                          action={giftFlowerAction.bind(
-                            null,
-                            flower.ids[0],
-                            review.user_id,
-                            review.id,
-                            bookId,
-                          )}
-                        >
-                          <button
-                            type="submit"
-                            className="rounded-full bg-village-ember px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90"
-                          >
-                            あげる
-                          </button>
-                        </form>
+                        <GiftSubmitButton
+                          action={() =>
+                            giftFlowerAction(
+                              flower.ids[0],
+                              review.user_id,
+                              review.id,
+                              bookId,
+                            )
+                          }
+                        />
                       </li>
                     ))}
                     {groupedGiftableFlowers.length === 0 ? (

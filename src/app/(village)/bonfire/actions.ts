@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getJustUnlockedFacilityLabel } from "@/lib/giftUnlock";
 
 export interface BonfireFormState {
   error?: string;
@@ -41,28 +42,46 @@ export async function giftCropAction(
   userCropId: string,
   recipientId: string,
   postId: string,
-) {
+): Promise<{ unlockedFacilityLabel: string | null }> {
   const supabase = await createClient();
-  await supabase.rpc("gift_crop", {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase.rpc("gift_crop", {
     p_user_crop_id: userCropId,
     p_recipient_id: recipientId,
     p_bonfire_post_id: postId,
   });
   revalidatePath("/bonfire");
+
+  if (!user || error) {
+    return { unlockedFacilityLabel: null };
+  }
+  return { unlockedFacilityLabel: await getJustUnlockedFacilityLabel(supabase, user.id) };
 }
 
 export async function giftFlowerAction(
   userFlowerId: string,
   recipientId: string,
   postId: string,
-) {
+): Promise<{ unlockedFacilityLabel: string | null }> {
   const supabase = await createClient();
-  await supabase.rpc("gift_flower", {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase.rpc("gift_flower", {
     p_user_flower_id: userFlowerId,
     p_recipient_id: recipientId,
     p_bonfire_post_id: postId,
   });
   revalidatePath("/bonfire");
+
+  if (!user || error) {
+    return { unlockedFacilityLabel: null };
+  }
+  return { unlockedFacilityLabel: await getJustUnlockedFacilityLabel(supabase, user.id) };
 }
 
 export async function deleteBonfirePostAction(postId: string) {

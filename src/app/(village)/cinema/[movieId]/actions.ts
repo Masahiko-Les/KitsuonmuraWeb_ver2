@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getJustUnlockedFacilityLabel } from "@/lib/giftUnlock";
 
 export interface CinemaReviewFormState {
   error?: string;
@@ -97,12 +98,21 @@ export async function giftFlowerAction(
   recipientId: string,
   reviewId: string,
   movieId: string,
-) {
+): Promise<{ unlockedFacilityLabel: string | null }> {
   const supabase = await createClient();
-  await supabase.rpc("gift_flower_to_cinema_review", {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { error } = await supabase.rpc("gift_flower_to_cinema_review", {
     p_user_flower_id: userFlowerId,
     p_recipient_id: recipientId,
     p_cinema_review_id: reviewId,
   });
   revalidatePath(`/cinema/${movieId}`);
+
+  if (!user || error) {
+    return { unlockedFacilityLabel: null };
+  }
+  return { unlockedFacilityLabel: await getJustUnlockedFacilityLabel(supabase, user.id) };
 }
