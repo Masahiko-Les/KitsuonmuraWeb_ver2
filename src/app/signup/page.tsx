@@ -48,7 +48,7 @@ export default function SignupPage() {
               新規登録
             </h1>
             <p className="mt-1.5 text-center text-xs tracking-wide text-village-ink/55">
-              村人としての一歩を踏み出しましょう
+              吃音村へようこそ
             </p>
 
             <div className="mt-7">

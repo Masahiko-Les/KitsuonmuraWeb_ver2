@@ -23,7 +23,7 @@ export function VillageHeader({ nickname }: { nickname?: string }) {
         </Link>
       ) : (
         <Link
-          href="/login"
+          href="/signup"
           className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-village-gold/70 bg-village-parchment/50 px-3 py-1.5 sm:right-4"
         >
           <svg
@@ -34,7 +34,7 @@ export function VillageHeader({ nickname }: { nickname?: string }) {
             <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.4 0-9 2.2-9 5v2h18v-2c0-2.8-4.6-5-9-5Z" />
           </svg>
           <span className="font-serif text-xs text-village-ink/70 sm:text-sm">
-            ログイン
+            新規登録
           </span>
         </Link>
       )}
