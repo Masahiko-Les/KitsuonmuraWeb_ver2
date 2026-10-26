@@ -63,6 +63,14 @@ export default async function HomePage() {
 
       <section className="village-woodgrain px-4 pt-6 pb-8 sm:rounded-b-2xl">
         <div className="rounded-xl border border-village-gold/40 bg-village-timber/60 p-5">
+          <div className="mb-3 flex justify-end">
+            <Link
+              href="/signup"
+              className="rounded-full border border-village-gold/60 px-4 py-1.5 text-xs font-medium text-village-parchment transition-colors hover:bg-village-gold/10"
+            >
+              新規登録
+            </Link>
+          </div>
           <h1 className="mb-3 text-center font-serif text-lg text-village-parchment">
             吃音村とは
           </h1>
