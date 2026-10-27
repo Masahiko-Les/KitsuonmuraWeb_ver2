@@ -51,21 +51,6 @@ export function SignupForm() {
             className={inputClassName}
           />
         </div>
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="passwordConfirm" className="text-xs font-medium tracking-wide text-village-ink/60">
-            パスワード（確認）
-          </label>
-          <input
-            id="passwordConfirm"
-            name="passwordConfirm"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            className={inputClassName}
-          />
-        </div>
-
         {state.error ? (
           <p className="rounded-lg border border-red-300/60 bg-red-50/80 px-3 py-2 text-center text-xs text-red-700">
             {state.error}

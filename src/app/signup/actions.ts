@@ -15,7 +15,6 @@ export async function signupAction(
 ): Promise<SignupFormState> {
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
-  const passwordConfirm = String(formData.get("passwordConfirm") ?? "");
 
   if (!email || !password) {
     return { error: "メールアドレスとパスワードを入力してください。" };
@@ -23,10 +22,6 @@ export async function signupAction(
 
   if (password.length < 8) {
     return { error: "パスワードは8文字以上にしてください。" };
-  }
-
-  if (password !== passwordConfirm) {
-    return { error: "パスワードが一致しません。" };
   }
 
   const headerList = await headers();
