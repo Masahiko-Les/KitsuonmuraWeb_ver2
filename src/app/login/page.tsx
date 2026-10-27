@@ -10,7 +10,13 @@ export const metadata: Metadata = {
   openGraph: { title: "ログイン | 吃音村" },
 };
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+
   return (
     <main className="relative flex flex-1 items-center justify-center overflow-hidden px-4 py-16">
       <div className="absolute inset-0">
@@ -51,7 +57,7 @@ export default function LoginPage() {
             </p>
 
             <div className="mt-7">
-              <LoginForm />
+              <LoginForm googleError={error === "google"} />
             </div>
           </div>
         </div>
