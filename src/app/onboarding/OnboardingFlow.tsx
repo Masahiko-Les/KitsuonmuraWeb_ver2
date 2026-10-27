@@ -10,14 +10,14 @@ export function OnboardingFlow() {
     return (
       <div className="text-center">
         <h1 className="mb-4 font-serif text-2xl text-village-ink">
-          吃音村の村人になりました
+          吃音村へようこそ！
         </h1>
         <p className="mb-8 text-sm leading-relaxed text-village-ink/70">
-          村人全員が歓迎します。
+          吃音村の村人全員があなたのことを歓迎します。
           <br />
           まずは、住民票を作成しましょう。
           <br />
-          まずはニックネームだけで大丈夫です。
+          まずはニックネームだけでも良いので記入をお願いします。
         </p>
         <button
           type="button"
@@ -32,13 +32,9 @@ export function OnboardingFlow() {
 
   return (
     <>
-      <h1 className="mb-2 font-serif text-2xl text-village-ink">
+      <h1 className="mb-6 text-center font-serif text-2xl text-village-ink">
         吃音村の住民票
       </h1>
-      <p className="mb-6 text-sm leading-relaxed text-village-ink/70">
-        この村での住民票を作りましょう。ここで書いた内容は、
-        ログインした村人だけが見ることができます。
-      </p>
       <OnboardingForm />
     </>
   );
