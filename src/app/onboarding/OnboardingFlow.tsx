@@ -3,12 +3,23 @@
 import { useState } from "react";
 import { OnboardingForm } from "./OnboardingForm";
 
+function Flourish() {
+  return (
+    <div className="mb-5 flex items-center justify-center gap-3 text-village-gold/70">
+      <span className="h-px w-10 bg-current" />
+      <span className="h-2 w-2 rotate-45 border border-current" />
+      <span className="h-px w-10 bg-current" />
+    </div>
+  );
+}
+
 export function OnboardingFlow() {
   const [step, setStep] = useState<"welcome" | "form">("welcome");
 
   if (step === "welcome") {
     return (
       <div className="text-center">
+        <Flourish />
         <h1 className="mb-4 font-serif text-2xl text-village-ink">
           吃音村へようこそ！
         </h1>
@@ -32,8 +43,9 @@ export function OnboardingFlow() {
 
   return (
     <>
+      <Flourish />
       <h1 className="mb-6 text-center font-serif text-2xl text-village-ink">
-        吃音村の住民票
+        住民票
       </h1>
       <OnboardingForm />
     </>
