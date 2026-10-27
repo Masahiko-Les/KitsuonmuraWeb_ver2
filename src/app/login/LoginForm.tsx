@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { GoogleContinueButton } from "@/components/GoogleContinueButton";
+import { GoogleContinueButton, GOOGLE_LOGIN_ENABLED } from "@/components/GoogleContinueButton";
 import { loginAction, type AuthFormState } from "./actions";
 
 const initialState: AuthFormState = {};
@@ -15,13 +15,17 @@ export function LoginForm({ googleError }: { googleError?: boolean }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <GoogleContinueButton />
+      {GOOGLE_LOGIN_ENABLED ? (
+        <>
+          <GoogleContinueButton />
 
-      <div className="flex items-center gap-3 text-xs text-village-ink/40">
-        <span className="h-px flex-1 bg-village-border" />
-        または
-        <span className="h-px flex-1 bg-village-border" />
-      </div>
+          <div className="flex items-center gap-3 text-xs text-village-ink/40">
+            <span className="h-px flex-1 bg-village-border" />
+            または
+            <span className="h-px flex-1 bg-village-border" />
+          </div>
+        </>
+      ) : null}
 
       {googleError ? (
         <p className="rounded-lg border border-red-300/60 bg-red-50/80 px-3 py-2 text-center text-xs text-red-700">

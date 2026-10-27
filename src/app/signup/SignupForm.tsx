@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { GoogleContinueButton } from "@/components/GoogleContinueButton";
+import { GoogleContinueButton, GOOGLE_LOGIN_ENABLED } from "@/components/GoogleContinueButton";
 import { signupAction, type SignupFormState } from "./actions";
 
 const initialState: SignupFormState = {};
@@ -15,13 +15,17 @@ export function SignupForm() {
 
   return (
     <div className="flex flex-col gap-4">
-      <GoogleContinueButton />
+      {GOOGLE_LOGIN_ENABLED ? (
+        <>
+          <GoogleContinueButton />
 
-      <div className="flex items-center gap-3 text-xs text-village-ink/40">
-        <span className="h-px flex-1 bg-village-border" />
-        または
-        <span className="h-px flex-1 bg-village-border" />
-      </div>
+          <div className="flex items-center gap-3 text-xs text-village-ink/40">
+            <span className="h-px flex-1 bg-village-border" />
+            または
+            <span className="h-px flex-1 bg-village-border" />
+          </div>
+        </>
+      ) : null}
 
       <form action={formAction} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
