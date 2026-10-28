@@ -35,6 +35,7 @@ export interface Profile {
   difficult_situations: string | null;
   gift_count: number;
   easy_situations: string | null;
+  coping_strategies: string | null;
   first_noticed_stutter: string | null;
   created_at: string;
   updated_at: string;

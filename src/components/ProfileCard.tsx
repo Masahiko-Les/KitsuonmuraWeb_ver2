@@ -81,6 +81,10 @@ export function ProfileCard({ profile }: { profile: Profile }) {
         <LabeledText label="吃音が出にくい場面" text={profile.easy_situations} />
       ) : null}
 
+      {profile.coping_strategies ? (
+        <LabeledText label="自分の対処法" text={profile.coping_strategies} />
+      ) : null}
+
       {profile.first_noticed_stutter ? (
         <LabeledText
           label="自分の吃音史"

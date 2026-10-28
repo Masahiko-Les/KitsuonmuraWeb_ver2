@@ -32,6 +32,7 @@ export async function createProfileAction(
   const difficultWords = formData.getAll("difficult_words").map(String);
   const difficultSituations = String(formData.get("difficult_situations") ?? "").trim();
   const easySituations = String(formData.get("easy_situations") ?? "").trim();
+  const copingStrategies = String(formData.get("coping_strategies") ?? "").trim();
   const firstNoticedStutter = String(formData.get("first_noticed_stutter") ?? "").trim();
 
   const { error } = await supabase.from("profiles").insert({
@@ -44,6 +45,7 @@ export async function createProfileAction(
     difficult_words: difficultWords,
     difficult_situations: difficultSituations || null,
     easy_situations: easySituations || null,
+    coping_strategies: copingStrategies || null,
     first_noticed_stutter: firstNoticedStutter || null,
   });
 

@@ -87,6 +87,19 @@ export function OnboardingForm() {
       </div>
 
       <div className="flex flex-col gap-1">
+        <label htmlFor="coping_strategies" className="text-sm text-village-ink/80">
+          自分の対処法（任意）
+        </label>
+        <textarea
+          id="coping_strategies"
+          name="coping_strategies"
+          rows={3}
+          maxLength={2000}
+          className="rounded-lg border border-village-border bg-white px-4 py-2 text-village-ink outline-none focus:border-village-ember"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1">
         <label htmlFor="first_noticed_stutter" className="text-sm text-village-ink/80">
           自分の吃音史（任意）
         </label>
