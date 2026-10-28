@@ -1,10 +1,9 @@
 import { signInWithGoogleAction } from "@/app/auth/actions";
 
-// Toggled off while the Google Cloud OAuth consent screen is still stuck
-// in "testing" status (only explicitly-added test users can sign in —
-// everyone else hits an "access blocked" screen). Flip back to true once
-// the app is published and this actually works for real visitors.
-export const GOOGLE_LOGIN_ENABLED = false;
+// Google Cloud OAuth consent screen is published to production (not
+// "testing"), so this now works for any Google account, not just
+// explicitly-added test users.
+export const GOOGLE_LOGIN_ENABLED = true;
 
 export function GoogleContinueButton() {
   return (
