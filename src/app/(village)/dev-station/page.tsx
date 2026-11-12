@@ -4,26 +4,58 @@ import type { DevStationComment, Profile } from "@/types/database";
 import { DevStationCommentForm } from "./DevStationCommentForm";
 import { deleteDevStationCommentAction } from "./actions";
 
-const DEV_STATION_POSTS = [
+const DEV_STATION_POSTS: {
+  id: string;
+  body: string;
+  link: string | null;
+  linkLabel: string | null;
+  inlineLink?: { text: string; href: string };
+}[] = [
   {
     id: "prototype-v2",
-    body: "次の吃音村の試作アプリです。ぜひ試して皆さんのご意見をいただきたいです。\n\nもっとどうぶつの森のような世界観にして、苦労の種や挑戦の種をわかりやすくしてみました。あとカフェで他者と話せる仕組みも導入してみました。",
+    body: "この吃音村をさらに良くするために試作アプリを作りました。良ければぜひ使っていただき皆さんのご意見をいただきたいです。\n\n「新・吃音村」は、もっとどうぶつの森のような世界観にして、苦労の種や挑戦の種をわかりやすくしてみました。また「カフェ」で他者と安全に話せる仕組みも導入してました。",
     link: "https://kitsuonmura.vercel.app/",
     linkLabel: "試作アプリ（新・吃音村）を開く",
+    inlineLink: { text: "新・吃音村", href: "https://kitsuonmura.vercel.app/" },
   },
   {
     id: "ideas",
     body: "吃音村を少しでも良くするためのアイデアがあればぜひ教えてください。\n新しい建物でも、仕組みでも、もっとこうしたらいいんじゃないか、などなど。\n皆さんの力で少しでも良い村を作りたいと考えています。",
-    link: null as string | null,
-    linkLabel: null as string | null,
+    link: null,
+    linkLabel: null,
   },
   {
     id: "contributors-wanted",
     body: "吃音村の開発にご協力いただける方を絶賛募集しております。アプリ開発でもデザインでも、アイデアでも、世界観でも、コミュニティ運営でも、人の集め方でも、安全面でも、いろんな面で悩んでいます。もし少しでも協力したい！という方がいましたら、こちらのコメント欄か、myriel.jp@gmail.comまでご連絡お願いします。",
-    link: null as string | null,
-    linkLabel: null as string | null,
+    link: null,
+    linkLabel: null,
   },
 ];
+
+function renderPostBody(post: (typeof DEV_STATION_POSTS)[number]) {
+  if (!post.inlineLink) {
+    return post.body;
+  }
+  const { text, href } = post.inlineLink;
+  const index = post.body.indexOf(text);
+  if (index === -1) {
+    return post.body;
+  }
+  return (
+    <>
+      {post.body.slice(0, index)}
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-village-ember underline underline-offset-2 hover:text-village-ember/80"
+      >
+        {text}
+      </a>
+      {post.body.slice(index + text.length)}
+    </>
+  );
+}
 
 export default async function DevStationPage() {
   const { supabase, user } = await requireProfile();
@@ -69,7 +101,7 @@ export default async function DevStationPage() {
             >
               <div className="mb-2 text-sm font-medium text-village-ink">村長</div>
               <p className="whitespace-pre-wrap text-sm leading-relaxed text-village-ink/90">
-                {post.body}
+                {renderPostBody(post)}
               </p>
               {post.link ? (
                 <a
