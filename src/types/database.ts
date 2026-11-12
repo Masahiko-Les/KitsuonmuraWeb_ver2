@@ -60,6 +60,16 @@ export interface BonfirePost {
   deleted_at: string | null;
 }
 
+export interface DevStationComment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+}
+
 export interface GardenSeed {
   id: string;
   user_id: string;

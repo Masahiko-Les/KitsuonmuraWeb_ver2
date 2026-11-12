@@ -9,6 +9,7 @@ export const ALWAYS_UNLOCKED_FACILITIES = [
   "field",
   "garden",
   "bonfire",
+  "dev-station",
 ];
 
 export interface BadgeDefinition {
@@ -22,7 +23,6 @@ export const BADGES: BadgeDefinition[] = [
   { badgeNumber: 1, requiredGifts: 5, facilityKey: "desert", facilityLabel: "砂漠" },
   { badgeNumber: 2, requiredGifts: 10, facilityKey: "library", facilityLabel: "図書館" },
   { badgeNumber: 3, requiredGifts: 50, facilityKey: "cinema", facilityLabel: "映画館" },
-  { badgeNumber: 4, requiredGifts: 100, facilityKey: "dev-station", facilityLabel: "開発局" },
   { badgeNumber: 5, requiredGifts: 150, facilityKey: "radio-station", facilityLabel: "ラジオ局" },
   { badgeNumber: 6, requiredGifts: 200, facilityKey: "shrine", facilityLabel: "祠" },
   { badgeNumber: 7, requiredGifts: 250, facilityKey: "outside-world", facilityLabel: "外の世界へ" },
