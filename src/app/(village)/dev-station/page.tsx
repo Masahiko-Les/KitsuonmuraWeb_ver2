@@ -6,16 +6,16 @@ import { deleteDevStationCommentAction } from "./actions";
 
 const DEV_STATION_POSTS = [
   {
-    id: "ideas",
-    body: "吃音村を少しでも良くするためのアイデアがあればぜひ教えてください。\n新しい建物でも、仕組みでも、もっとこうしたらいいんじゃないか、などなど。\n皆さんの力で少しでも良い村を作りたいと考えています。",
-    link: null as string | null,
-    linkLabel: null as string | null,
-  },
-  {
     id: "prototype-v2",
     body: "次の吃音村の試作アプリです。ぜひ試して皆さんのご意見をいただきたいです。\n\nもっとどうぶつの森のような世界観にして、苦労の種や挑戦の種をわかりやすくしてみました。あとカフェで他者と話せる仕組みも導入してみました。",
     link: "https://kitsuonmura.vercel.app/",
     linkLabel: "試作アプリ（新・吃音村）を開く",
+  },
+  {
+    id: "ideas",
+    body: "吃音村を少しでも良くするためのアイデアがあればぜひ教えてください。\n新しい建物でも、仕組みでも、もっとこうしたらいいんじゃないか、などなど。\n皆さんの力で少しでも良い村を作りたいと考えています。",
+    link: null as string | null,
+    linkLabel: null as string | null,
   },
   {
     id: "contributors-wanted",
