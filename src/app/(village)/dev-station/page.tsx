@@ -17,6 +17,12 @@ const DEV_STATION_POSTS = [
     link: "https://kitsuonmura.vercel.app/",
     linkLabel: "試作アプリ（新・吃音村）を開く",
   },
+  {
+    id: "contributors-wanted",
+    body: "吃音村の開発にご協力いただける方を絶賛募集しております。アプリ開発でもデザインでも、アイデアでも、世界観でも、コミュニティ運営でも、人の集め方でも、安全面でも、いろんな面で悩んでいます。もし少しでも協力したい！という方がいましたら、こちらのコメント欄か、myriel.jp@gmail.comまでご連絡お願いします。",
+    link: null as string | null,
+    linkLabel: null as string | null,
+  },
 ];
 
 export default async function DevStationPage() {
