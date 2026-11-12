@@ -55,10 +55,15 @@ export default async function ResidentsPage({
               href={`/residents/${resident.id}`}
               className="flex items-center gap-3 rounded-xl border border-village-border bg-village-paper px-4 py-3 transition-colors hover:border-village-ember"
             >
-              <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-village-border bg-white text-lg">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-village-border bg-white text-lg">
                 🌾
               </span>
-              <span className="text-village-ink">{resident.nickname}</span>
+              <span className="shrink-0 text-village-ink">{resident.nickname}</span>
+              {resident.bio ? (
+                <span className="min-w-0 flex-1 truncate text-sm text-village-ink/45">
+                  {resident.bio.replace(/\s+/g, " ")}
+                </span>
+              ) : null}
             </Link>
           </li>
         ))}
